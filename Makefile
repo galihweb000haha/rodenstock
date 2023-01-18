@@ -1,5 +1,5 @@
 PROJECT_NAME := $(shell basename $CURDIR)
-VIRTUAL_ENVIRONMENT := $(CURDIR)/.venv
+VIRTUAL_ENVIRONMENT := $(CURDIR)/myenv
 LOCAL_PYTHON := $(VIRTUAL_ENVIRONMENT)/bin/python3
 
 define HELP
@@ -20,11 +20,11 @@ export HELP
 .PHONY: run install deploy update format lint clean help
 
 requirements: .requirements.txt
-env: ./.venv/bin/activate
+env: ./myenv/bin/activate
 
 
 .requirements.txt: requirements.txt
-	$(shell . .venv/bin/activate && pip install -r requirements.txt)
+	$(shell . myenv/bin/activate && pip install -r requirements.txt)
 
 
 all help:
@@ -38,8 +38,8 @@ run: env
 
 .PHONY: install
 install:
-	if [ ! -d "./.venv" ]; then python3 -m venv $(VIRTUAL_ENVIRONMENT); fi
-	. .venv/bin/activate
+	if [ ! -d "./myenv" ]; then python3 -m venv $(VIRTUAL_ENVIRONMENT); fi
+	. myenv/bin/activate
 	$(LOCAL_PYTHON) -m pip install --upgrade pip setuptools wheel
 	$(LOCAL_PYTHON) -m pip install -r requirements.txt
 
@@ -52,8 +52,8 @@ deploy:
 
 .PHONY: update
 update:
-	if [ ! -d "./.venv" ]; then python3 -m venv $(VIRTUAL_ENVIRONMENT); fi
-	.venv/bin/python3 -m pip install --upgrade pip setuptools wheel
+	if [ ! -d "./myenv" ]; then python3 -m venv $(VIRTUAL_ENVIRONMENT); fi
+	myenv/bin/python3 -m pip install --upgrade pip setuptools wheel
 	poetry update
 	poetry export -f requirements.txt --output requirements.txt --without-hashes
 
@@ -68,7 +68,7 @@ format: env
 lint:
 	flake8 . --count \
 			--select=E9,F63,F7,F82 \
-			--exclude .git,.github,__pycache__,.pytest_cache,.venv,logs,creds,.venv,docs,logs \
+			--exclude .git,.github,__pycache__,.pytest_cache,myenv,logs,creds,myenv,docs,logs \
 			--show-source \
 			--statistics
 
