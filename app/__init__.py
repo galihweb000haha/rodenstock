@@ -29,7 +29,8 @@ def create_app():
         app.register_blueprint(routes.main.main_bp)
         app.register_blueprint(routes.auth.auth_bp)
         app.register_blueprint(routes.admin.admin_bp)
-        app.register_blueprint(routes.alumni.alumni_bp)
+        app.register_blueprint(routes.prodi.prodi_bp)
+        app.register_blueprint(routes.predict.predict_bp)
 
         # Create Database Models
         db.create_all()
@@ -37,8 +38,8 @@ def create_app():
         # db.session.commit()
         
         # Compile static assets
-        if app.config["FLASK_ENV"] == "development":
-            compile_static_assets(app)
+        # if app.config["FLASK_ENV"] == "development":
+            # compile_static_assets(app)
 
         return app
 

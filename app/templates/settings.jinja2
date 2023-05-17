@@ -8,138 +8,102 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-pills flex-column flex-md-row mb-3">
-            <li class="nav-item">
-                <a class="nav-link" href="pages-account-settings-account.html"
-                ><i class="bx bx-user me-1"></i> Account</a
-                >
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="javascript:void(0);"
-                ><i class="bx bx-bell me-1"></i> Permissions</a
-                >
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="pages-account-settings-connections.html"
-                ><i class="bx bx-link-alt me-1"></i> Reset Password</a
-                >
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="button-akun" href="javascript:void(0);"
+                    ><i class="bx bx-user me-1"></i> Akun</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="button-reset" href="javascript:void(0);"
+                    ><i class="bx bx-key me-1"></i> Ganti Password<a>
+                </li>
             </ul>
-            <div class="card">
-            <!-- Notifications -->
-            <h5 class="card-header">Recent Devices</h5>
-            <div class="card-body">
-                <span
-                >We need permission from your browser to show notifications.
-                <span class="notificationRequest"><strong>Request Permission</strong></span></span
-                >
-                <div class="error"></div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-borderless border-bottom">
-                <thead>
-                    <tr>
-                    <th class="text-nowrap">Type</th>
-                    <th class="text-nowrap text-center">✉️ Email</th>
-                    <th class="text-nowrap text-center">🖥 Browser</th>
-                    <th class="text-nowrap text-center">👩🏻‍💻 App</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <td class="text-nowrap">New for you</td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck1" checked />
+            <div class="card" id="card-akun">
+                <h5 class="card-header">Pengaturan Akun</h5>
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="nama_lengkap">Nama Lengkap</label>
+                                <input class="form-control" name="nama_lengkap" id="nama_lengkap" value="{{current_user['name']}}"/>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="jk">Jenis Kelamin</label>
+                                <select class="form-select form-control" name="jk" id="jk">
+                                    <option>Pilih Jenis Kelamin</option>
+                                    <option {% if current_user.gender %}selected{% endif %}>Laki-laki</option>
+                                    <option{% if not current_user.gender %}selected{% endif %}>Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="email">Email</label>
+                                <input class="form-control" name="email" id="email" value="{{current_user['email']}}"/>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="no_hp">No HP</label>
+                                <input class="form-control" name="no_hp" id="no_hp" value="{{current_user['no_hp']}}"/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label>Pilih Foto</label>
+                                    <input class="form-control" type="file" id="formFile">
+                                    <div id="defaultFormControlHelp" class="form-text">
+                                        Ukuran file < 5MB
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck2" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck3" checked />
-                        </div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td class="text-nowrap">Account activity</td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck4" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck5" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck6" checked />
-                        </div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td class="text-nowrap">A new browser used to sign in</td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck7" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck8" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck9" />
-                        </div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td class="text-nowrap">A new device is linked</td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck10" checked />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck11" />
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="defaultCheck12" />
-                        </div>
-                    </td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            <div class="card-body">
-                <h6>When should we send you notifications?</h6>
-                <form action="javascript:void(0);">
-                <div class="row">
-                    <div class="col-sm-6">
-                    <select id="sendNotification" class="form-select" name="sendNotification">
-                        <option selected>Only when I'm online</option>
-                        <option>Anytime</option>
-                    </select>
-                    </div>
-                    <div class="mt-4">
-                    <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                    <button type="reset" class="btn btn-outline-secondary">Discard</button>
-                    </div>
+                        <button class="btn btn-primary">Simpan</button>
+                    </form>
                 </div>
-                </form>
             </div>
-            <!-- /Notifications -->
+        </div>
+        <div class="col-md-12">
+            <div class="card d-none" id="card-reset">
+                <h5 class="card-header">Ganti Password</h5>
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <label for="password_lama">Masukkan Password Saat Ini</label>
+                                <input class="form-control" name="password_lama" id="password_lama"/>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="password_baru">Masukkan Password Baru</label>
+                                <input class="form-control" name="password_baru" id="password_baru"/>
+                                <div id="defaultFormControlHelp" class="form-text">
+                                    Minimal 8 karakter
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="konfirmasi_password">Konfirmasi Password</label>
+                                <input class="form-control" name="konfirmasi_password" id="konfirmasi_password"/>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Simpan</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% block additionalscripts %}
+<script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
+<script>
+    $('#button-akun').on('click', function (e) {
+        e.preventDefault()
+        $('#card-akun').removeClass('d-none')
+        $('#card-reset').addClass('d-none')
+        $(this).addClass('active')
+        $('#button-reset').removeClass('active')
+    })
+    $('#button-reset').on('click', function (e) {
+        e.preventDefault()
+        $('#card-reset').removeClass('d-none')
+        $('#card-akun').addClass('d-none')
+        $(this).addClass('active')
+        $('#button-akun').removeClass('active')
+    })
+</script>
+{% endblock %}
 {% endblock %}

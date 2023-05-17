@@ -10,6 +10,7 @@ sys.path.insert(1, '/home/galih/flasklogin-tutorial/app')
 from app import login_manager
 from app.forms import LoginForm, SignupForm
 from app.models import User
+from app import db
 
 # Blueprint Configuration
 auth_bp = Blueprint(

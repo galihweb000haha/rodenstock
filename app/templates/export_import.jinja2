@@ -1,0 +1,136 @@
+{% extends "layout_dashboard.jinja2" %}
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Settings /</span> Notifications
+    </h4>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" id="button-export" href="javascript:void(0);"
+                    ><i class="bx bx-export me-1"></i> Export</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="button-import" href="javascript:void(0);"
+                    ><i class="bx bx-import me-1"></i> Import</a
+                    >
+                </li>
+            </ul>
+            <div class="card" id="card-import">
+                <h5 class="card-header">Import Data Pencapaian Mahasiswa</h5>
+                <div class="card-body">
+                    <span>Pilih apa saya yang akan di-import</span>
+                    <div class="error"></div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-borderless border-bottom">
+                    <thead>
+                        <tr>
+                        <th class="text-nowrap">Kolom</th>
+                        <th class="text-nowrap text-center">✉️ Pilih</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for dt in data %}
+                        <tr>
+                            <td class="text-nowrap">{{dt}}</td>
+                            <td>
+                                <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" id="defaultCheck1" checked />
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                <div class="card-body">
+                <h6>Upload file<h6>                
+                    <form action="javascript:void(0);">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input class="form-control" type="file" id="formFile">
+                                <div id="defaultFormControlHelp" class="form-text">
+                                    File berformat xlsx/csv
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2">Import</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card d-none" id="card-export">
+                <h5 class="card-header">Export Data Pencapaian Mahasiswa</h5>
+                <div class="card-body">
+                    <span>Pilih beberapa kolom yang Anda butuhkan</span>
+                    <div class="error"></div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-borderless border-bottom">
+                    <thead>
+                        <tr>
+                        <th class="text-nowrap">Kolom</th>
+                        <th class="text-nowrap text-center">✉️ Pilih</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for dt in data %}
+                        <tr>
+                            <td class="text-nowrap">{{dt}}</td>
+                            <td>
+                                <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" id="defaultCheck1" checked />
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <h6>Pilih format yang Anda butuhkan</h6>
+                    <form action="javascript:void(0);">
+                    <div class="row">
+                        <div class="col-sm-6">
+                        <select id="sendNotification" class="form-select" name="sendNotification">
+                            <option selected>.xls</option>
+                            <option>.csv</option>
+                        </select>
+                        </div>
+                        <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2">Export</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block additionalscripts %}
+<script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
+<script>
+    $('#button-export').on('click', function (e) {
+        e.preventDefault()
+        $('#card-export').removeClass('d-none')
+        $('#card-import').addClass('d-none')
+        $(this).addClass('active')
+        $('#button-import').removeClass('active')
+    })
+    $('#button-import').on('click', function (e) {
+        e.preventDefault()
+        $('#card-import').removeClass('d-none')
+        $('#card-export').addClass('d-none')
+        $(this).addClass('active')
+        $('#button-export').removeClass('active')
+    })
+</script>
+{% endblock %}
+{% endblock %}

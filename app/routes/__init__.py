@@ -1,1 +1,1 @@
-from . import alumni, admin, auth, main
+from . import main, auth, admin, prodi, predict

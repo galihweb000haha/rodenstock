@@ -1,0 +1,343 @@
+{% extends "layout_dashboard.jinja2" %}
+{% block pagestyles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
+{% endblock %}
+{% block content %}
+
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="button-single-import" href="javascript:void(0);"
+                        ><i class='bx bx-list-check'></i> Single Import</a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="button-import-batch" href="javascript:void(0);"
+                        ><i class='bx bx-file'></i> Import Batch<a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Form controls -->
+            <form action="{{ url_for("main_bp.input_data") }}" method="post" id="form-single-import">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0" class="card-header">Data Pencapaian Mahasiswa</h5>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <fieldset class="nim form-label">
+                                    {# <label for="nim" class="form-label">{{ form.nim.label }}</label> #}
+                                    {{ form.nim(class='form-control my_selection') }}
+                                    {% if form.nim.errors %}
+                                    <ul class="errors">
+                                        {% for error in form.nim.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mt-2 text-muted">INFORMASI PRIBADI MAHASISWA</h6>
+                                    <div class="card mb-4">
+                                        <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div> Malik Ibrahim Saleh</li>
+                                        <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>19090099</li>
+                                        <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div> Teknik Informatika</li>
+                                        <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div> 8 (Delapan)</li>
+                                        </ul>
+                                    </div>
+                                    {# <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label for="nim">NIM</label>
+                                            <input name="nim2" id="nim2" class="form-control" readonly value="{{detail_mahasiswa.nim}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="nama_lengkap">Nama Lengkap</label>
+                                            <input name="nama_lengkap" id="nama_lengkap" class="form-control" readonly value="{{detail_mahasiswa.nama_lengkap}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="jk">Jenis Kelamin</label>
+                                            <input name="jk" id="jk" class="form-control" readonly value="{{detail_mahasiswa.jk}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="alamat">Alamat</label>
+                                            <input name="alamat" id="alamat" class="form-control" readonly value="{{detail_mahasiswa.jln}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="pekerjaan_ortu">Pekerjaan Ortu</label>
+                                            <input name="pekerjaan_ortu" id="pekerjaan_ortu" class="form-control" readonly value="{{detail_mahasiswa.pekerjaan_ayah}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="penghasilan_ortu">Penghasilan Ortu</label>
+                                            <input name="penghasilan_ortu" id="penghasilan_ortu" class="form-control" readonly value="{{detail_mahasiswa.penghasilan_ayah}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="status_mahasiswa">Status Mahasiswa</label>
+                                            <input name="state" id="status_mahasiswa" class="form-control" readonly value="{{detail_mahasiswa.status_mahasiswa}}">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="batch_year">Tahun Masuk</label>
+                                            <input name="batch_year" id="batch_year" class="form-control" readonly value="{{detail_mahasiswa.tahun_masuk}}">
+                                        </div>
+                                    </div> #}
+                                </div>
+
+                                <div class="col-md-6" style="border-left:1px solid #ddd;">
+                                    <h6 class="mt-2 text-muted">DATA PENCAPAIAN MAHASISWA</h6>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <label for="ipk">Nilai IPK</label>
+                                            <input name="ipk" id="ipk" class="form-control" value="{{mahasiswa.gpa_score}}">
+                                        </div>
+                                        <div class="col-md-12 mb-2">
+                                            <label for="prestasi" class="mb-3">Prestasi/Penghargaan</label>
+                                            <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-prestasi"><i class='bx bx-plus' ></i></div>
+                                            <div class="btn btn-dark btn-sm float-end" id="btn-min-input-prestasi"><i class='bx bx-minus' ></i></div>
+                                            <div class="row input-prestasi">
+                                                <div class="col-md-6">
+                                                    <input name="prestasi" placeholder="Nama prestasi" id="prestasi" class="form-control" value="{{mahasiswa.prestasi}}">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control">
+                                                        <option>-- Pilih Jenis Prestasi --</option>
+                                                        <option>Tingkat Internasional</option>
+                                                        <option>Tingkat Nasional</option>
+                                                        <option>Tingkat Regional</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-2">
+                                            <label for="organisasi" class="mb-3">Organisasi Mahasiswa</label>
+                                            <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-organisasi"><i class='bx bx-plus' ></i></div>
+                                            <div class="btn btn-dark btn-sm float-end" id="btn-min-input-organisasi"><i class='bx bx-minus' ></i></div>
+                                            <div class="row input-organisasi">
+                                                <div class="col-md-6">
+                                                    <input name="organisasi" placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control">
+                                                        <option>-- Pilih Jenis  --</option>
+                                                        <option>Pengurus</option>
+                                                        <option>Anggota</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-2">
+                                            <label for="sertifikat" class="mb-3">Sertifikat</label>
+                                            <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-sertifikat"><i class='bx bx-plus' ></i></div>
+                                            <div class="btn btn-dark btn-sm float-end" id="btn-min-input-sertifikat"><i class='bx bx-minus' ></i></div>
+                                            <div class="row input-sertifikat">
+                                                <div class="col-md-6">
+                                                    <input name="sertifikat" placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control">
+                                                        <option>-- Pilih Jenis Sertifikat --</option>
+                                                        <option>Sertifikat Keahlian</option>
+                                                        <option>Sertifikat Kursus</option>
+                                                        <option>Sertifikat Seminar/Webinar</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <fieldset class="form-label float-end" style="width:100px;">
+                                    {{ form.submit(class='form-control btn btn-primary') }}
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <form action="{{ url_for("main_bp.input_batch") }}" method="post" id="form-import-batch" enctype="multipart/form-data">            
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0" class="card-header">Data Pencapaian Mahasiswa</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div class="input-group">
+                                        <input class="form-control" name="file" type="file" id="formFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                                        <div class="input-group-append">
+                                            {# <button class="btn btn-success" id="btn-preview" type="submit">Preview</button> #}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div id="preview-excel" class="mt-3" style="overflow: auto; max-height: 350px;">
+                                    {% if preview %}
+                                        {{preview}}
+                                    {% endif %}
+                                </div>
+                                <div class="mt-3">
+                                    <fieldset class="form-label float-end" style="width:100px;">
+                                        {{ form.submit(class='form-control btn btn-primary') }}
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- / Content -->
+    
+    {% block additionalscripts %}
+       
+        <!-- Vendors JS -->
+        {# <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script> #}
+        {# <script src="{{ url_for('static', filename='vendor/libs/apex-charts/apexcharts.js') }}"></script> #}
+        <!-- Page JS -->
+        <script src="{{ url_for('static', filename='js/dashboards-analytics.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('.my_selection').select2();
+            });
+            $('#button-single-import').on('click', function (e) {
+                e.preventDefault()
+                $('#form-single-import').removeClass('d-none')
+                $('#form-import-batch').addClass('d-none')
+                $(this).addClass('active')
+                $('#button-import-batch').removeClass('active')
+            })
+            $('#button-import-batch').on('click', function (e) {
+                e.preventDefault()
+                $('#form-import-batch').removeClass('d-none')
+                $('#form-single-import').addClass('d-none')
+                $(this).addClass('active')
+                $('#button-single-import').removeClass('active')
+            })
+            $('.nim').change(function() {
+                $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
+                    $.each( data['data'], function( key, value ) {
+                        $('#nim2').val(value.nim)
+                        $('#nama_lengkap').val(value.nama_lengkap)
+                        $('#alamat').val(value.jln)
+                        $('#penghasilan_ortu').val(value.penghasilan_ayah)
+                        $('#pekerjaan_ortu').val(value.pekerjaan_ayah)
+                        $('#jk').val(value.jk)
+                        let state = (value.status_mahasiswa == 'A') ? 'Aktif' : 'Tidak Aktif';
+                        $('#status_mahasiswa').val(state)
+                        $('#batch_year').val(value.tahun_masuk)
+                    })
+                });
+
+                $.get('/get_achievement?nim='+$('#select2-nim-container').text(), function(data) {
+                    $.each( data, function( key, value ) {
+                        $('#prestasi').val(value.prestasi)
+                        $('#organisasi').val(value.organisasi)
+                        $('#sertifikat').val(value.sertifikat)
+                        $('#ipk').val(value.gpa_score)
+                    })
+                });
+            })
+            // INPUT PRESTASI 
+            $('#btn-plus-input-prestasi').click(function() {
+                el =
+                `<div class="row mb-2 input-prestasi">
+                    <div class="col-md-6">
+                        <input name="prestasi" placeholder="Nama prestasi" id="prestasi" class="form-control" value="{{mahasiswa.prestasi}}">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control">
+                            <option>-- Pilih Jenis Prestasi --</option>
+                            <option>Tingkat Internasional</option>
+                            <option>Tingkat Nasional</option>
+                            <option>Tingkat Regional</option>
+                        </select>
+                    </div>
+                </div>`;
+                $(el).insertBefore($('.input-prestasi').first())
+            })
+            $('#btn-min-input-prestasi').click(function() {
+                if ( $('.input-prestasi').length > 1 ) {
+                    $('.input-prestasi').first().remove()
+                }  
+            })
+            // INPUT ORGANISASI 
+            $('#btn-plus-input-organisasi').click(function() {
+                el =
+                `<div class="row mb-2 input-organisasi">
+                    <div class="col-md-6">
+                        <input name="organisasi" placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control">
+                            <option>-- Pilih Jenis  --</option>
+                            <option>Pengurus</option>
+                            <option>Anggota</option>
+                        </select>
+                    </div>
+                </div>`;
+                $(el).insertBefore($('.input-organisasi').first())
+            })
+            $('#btn-min-input-organisasi').click(function() {
+                if ( $('.input-organisasi').length > 1 ) {
+                    $('.input-organisasi').first().remove()
+                }  
+            })
+            // INPUT SERTIFIKAT 
+            $('#btn-plus-input-sertifikat').click(function() {
+                el =
+                `<div class="row mb-2 input-sertifikat">
+                    <div class="col-md-6">
+                        <input name="sertifikat" placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control">
+                            <option>-- Pilih Jenis Sertifikat --</option>
+                            <option>Sertifikat Keahlian</option>
+                            <option>Sertifikat Kursus</option>
+                            <option>Sertifikat Seminar/Webinar</option>
+                        </select>
+                    </div>
+                </div>`;
+                $(el).insertBefore($('.input-sertifikat').first())
+            })
+            $('#btn-min-input-sertifikat').click(function() {
+                if ( $('.input-sertifikat').length > 1 ) {
+                    $('.input-sertifikat').first().remove()
+                }  
+            })
+
+            //$('#form-import-batch').on('submit', function(e) {
+            //    e.preventDefault()
+            //    console.log(new FormData(this))
+            //  $.ajax({
+            //      type: "POST",
+            //      url: "/input_batch", 
+            //      processData: false,
+            //      contentType: false,
+            //      dataType : 'json',          
+            //      data: new FormData(this),
+            //      success: function (result) {
+            //          alert(result);
+            //      }
+            //  });
+            //})
+            
+        </script>
+
+    {% endblock %}
+{% endblock %}

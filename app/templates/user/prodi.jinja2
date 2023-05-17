@@ -1,100 +1,144 @@
 {% extends "layout_dashboard.jinja2" %}
 {% block pagestyles %}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
 {% endblock %}
 {% block content %}
 <!-- Basic Bootstrap Table -->
 <div class="container-xxl flex-grow-1 container-p-y">
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success alert-dismissible" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
     <div class="card">
-    <h5 class="card-header">Admin Prodi</h5>
-
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="tahun_angkatan" class="form-label">Pilih Tahun Angkatan</label>
-                    <select class="form-select my_selection" id="tahun_angkatan" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="1">2019</option>
-                        <option value="2">2018</option>
-                        <option value="3">2017</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="Prodi" class="form-label">Pilih Prodi</label>
-                    <select class="form-select my_selection" id="Prodi" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="1">Teknik Mesin</option>
-                        <option value="2">Perhotelan</option>
-                        <option value="3">Keperawanan</option>
-                    </select>
-                </div>
-            </div>
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">Admin Prodi</h5>
+            <button type="button" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#modalCenter">Tambah Akun</button>
+        </div>
+        <div class="table-responsive text-nowrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Prodi</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {% for prodi in data_prodi %}
+                    <tr>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> {{loop.index}}</td>
+                        <td>{{prodi.user_prodi.name}}</td>
+                        <td>{{prodi['nama_prodi']}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="javascript:void(0);"
+                                    ><i class="bx bx-key me-1"></i> Reset Password</a
+                                    >
+                                    <a class="dropdown-item" href="/delete_prodi/{{prodi.user_prodi.id}}"
+                                    ><i class="bx bx-trash me-1"></i> Hapus Akun</a
+                                    >
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="table-responsive text-nowrap">
-        <table class="table">
-        <thead>
-            <tr>
-            <th>No</th>
-            <th>NIM</th>
-            <th>Nama</th>
-            <th>Status</th>
-            <th></th>
-            </tr>
-        </thead>
-        <tbody class="table-border-bottom-0">
-        {% for mhs in mahasiswa %}
-            <tr>
-                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> {{loop.index}}</td>
-                <td>{{mhs['nim']}}</td>
-                <td>
-                    {{mhs['name']}}
-                </td>
-                <td><span class="badge bg-label-primary me-1">Active</span></td>
-                <td>
-                    <div class="dropdown">
-                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                        <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                        >
-                        <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                        >
-                    </div>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-        {% if not mahasiswa %}
-        <tr>
-            <td colspan="5">
-                <p class="text-center mt-2">Data belum tersedia !</p>
-            </td>
-        </tr>
-        {% endif %}
-        </tbody>
-        </table>
-    </div>
-    </div>
-
 </div>
-    <!--/ Basic Bootstrap Table -->
+<!--/ Basic Bootstrap Table -->
+<!-- Modal -->
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modalCenterTitle">Tambah Admin Prodi</h5>
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+        ></button>
+        </div>
+        <form action="{{ url_for('prodi_bp.index') }}" method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="modal-body">
+                <div class="col-md-12 mb-3">
+                    <label for="prodi" class="form-label">Prodi</label>
+                    <select name="prodi" id="prodi" class="form-control">
+                        <option> -- Pilih prodi -- </option>
+                    </select>
+                </div>
+                <fieldset class="name col mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(placeholder='Nama Lengkap', class="form-control") }}
+                    {% if form.name.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="email col mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(placeholder='youremail@example.com', class="form-control") }}
+                    {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="password col mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="confirm col mb-3">
+                    {{ form.confirm.label(class="form-label") }}
+                    {{ form.confirm(class="form-control") }}
+                    {% if form.confirm.errors %}
+                    <ul class="errors">
+                        {% for error in form.confirm.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Batal
+                </button>
+                <div class="submit-button">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
     {% block additionalscripts %}
-
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
 
         <script>
             $(document).ready(function() {
                 $('.my_selection').select2();
             });
         </script>
-
     {% endblock %}
 {% endblock  %}
