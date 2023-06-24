@@ -3,6 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required, logout_user
 
 from app.models import Prodi
+from app.models import AdminProdi
 from app.models import User
 
 from app.forms import SignupForm
@@ -17,7 +18,10 @@ prodi_bp = Blueprint(
 @login_required
 def index():
     """ Prodi Page """
-    data_prodi = Prodi.query.join(User, Prodi.user_id==User.id).all()
+    data_prodi = Prodi.query.all()
+    data_admin_prodi = AdminProdi.query.join(User, AdminProdi.user_id==User.id).join(Prodi, AdminProdi.prodi_id==Prodi.id).all()
+    
+    print("?>>>>>>>>>>>>>", data_admin_prodi)
     form = SignupForm()
     referrer = request.referrer
     
@@ -46,12 +50,13 @@ def index():
         return redirect(referrer)
         
     return render_template(
-        "user/prodi.jinja2",
+        "user/prodi/index.jinja2",
         title="Admin Prodi",
         template="dashboard-template",
         current_user=current_user,
         message="You are now logged in!",
         data_prodi=data_prodi,
+        data_admin_prodi=data_admin_prodi,
         form=form,
     )
         

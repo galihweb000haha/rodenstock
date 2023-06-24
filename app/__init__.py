@@ -10,11 +10,13 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 db = SQLAlchemy()
+migrate = Migrate()
 login_manager = LoginManager()
 
 def create_app():
     """Construct the core app object."""
     app = Flask(__name__, instance_relative_config=False)
+    migrate.init_app(app, db)
     app.config.from_object("config.Config")
 
     # Initialize Plugins

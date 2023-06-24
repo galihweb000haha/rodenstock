@@ -48,10 +48,28 @@
                                     <h6 class="mt-2 text-muted">INFORMASI PRIBADI MAHASISWA</h6>
                                     <div class="card mb-4">
                                         <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div> Malik Ibrahim Saleh</li>
-                                        <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>19090099</li>
-                                        <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div> Teknik Informatika</li>
-                                        <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div> 8 (Delapan)</li>
+                                        {% if not detail_mahasiswa %}
+                                            <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div> Malik Ibrahim Saleh</li>
+                                            <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>19090099</li>
+                                            <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div> Teknik Informatika</li>
+                                            <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div> 8 (Delapan)</li>
+                                        {% else %}
+                                            <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div>
+                                                <input name="nama" type="hidden" value="{{detail_mahasiswa['nama']}}" />
+                                                {{detail_mahasiswa['nama']}}
+                                            </li>
+                                            <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>
+                                                <input name="nim2" type="hidden" value="{{detail_mahasiswa['nim']}}" />
+                                                {{detail_mahasiswa['nim']}}
+                                            </li>
+                                            <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div>{{detail_mahasiswa['prodi']}}</li>
+                                            <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div>{{detail_mahasiswa['semester']}}</li>
+
+                                                <input name="parents_income" type="hidden" value="{{detail_mahasiswa['penghasilan_ortu']}}" />
+                                                <input name="pekerjaan_ortu" type="hidden" value="{{detail_mahasiswa['pekerjaan_ortu']}}" />
+                                                <input name="jk" type="hidden" value="{{detail_mahasiswa['jk']}}" />
+                                            
+                                        {% endif %}
                                         </ul>
                                     </div>
                                     {# <div class="row">
@@ -92,10 +110,11 @@
 
                                 <div class="col-md-6" style="border-left:1px solid #ddd;">
                                     <h6 class="mt-2 text-muted">DATA PENCAPAIAN MAHASISWA</h6>
+
                                     <div class="row">
                                         <div class="col-md-12 mb-2">
                                             <label for="ipk">Nilai IPK</label>
-                                            <input name="ipk" id="ipk" class="form-control" value="{{mahasiswa.gpa_score}}">
+                                            <input name="ipk" id="ipk" class="form-control" readonly value="{{detail_mahasiswa.ipk}}">
                                         </div>
                                         <div class="col-md-12 mb-2">
                                             <label for="prestasi" class="mb-3">Prestasi/Penghargaan</label>
@@ -103,14 +122,14 @@
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-prestasi"><i class='bx bx-minus' ></i></div>
                                             <div class="row input-prestasi">
                                                 <div class="col-md-6">
-                                                    <input name="prestasi" placeholder="Nama prestasi" id="prestasi" class="form-control" value="{{mahasiswa.prestasi}}">
+                                                    <input placeholder="Nama prestasi" id="prestasi" class="form-control">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>-- Pilih Jenis Prestasi --</option>
-                                                        <option>Tingkat Internasional</option>
-                                                        <option>Tingkat Nasional</option>
-                                                        <option>Tingkat Regional</option>
+                                                    <select class="form-control" name="prestasi">
+                                                        <option value="0">-- Pilih Jenis Prestasi --</option>
+                                                        <option value="3">Tingkat Internasional</option>
+                                                        <option value="2">Tingkat Nasional</option>
+                                                        <option value="1">Tingkat Regional</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -121,13 +140,13 @@
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-organisasi"><i class='bx bx-minus' ></i></div>
                                             <div class="row input-organisasi">
                                                 <div class="col-md-6">
-                                                    <input name="organisasi" placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                                                    <input placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>-- Pilih Jenis  --</option>
-                                                        <option>Pengurus</option>
-                                                        <option>Anggota</option>
+                                                    <select class="form-control" name="organisasi">
+                                                        <option value="0">-- Pilih Jenis  --</option>
+                                                        <option value="2">Pengurus</option>
+                                                        <option value="1">Anggota</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -138,14 +157,14 @@
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-sertifikat"><i class='bx bx-minus' ></i></div>
                                             <div class="row input-sertifikat">
                                                 <div class="col-md-6">
-                                                    <input name="sertifikat" placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                                                    <input placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>-- Pilih Jenis Sertifikat --</option>
-                                                        <option>Sertifikat Keahlian</option>
-                                                        <option>Sertifikat Kursus</option>
-                                                        <option>Sertifikat Seminar/Webinar</option>
+                                                    <select class="form-control" name="sertifikat">
+                                                        <option value="0">-- Pilih Jenis Sertifikat --</option>
+                                                        <option value="3">Sertifikat Keahlian</option>
+                                                        <option value="2">Sertifikat Kursus</option>
+                                                        <option value="1">Sertifikat Seminar/Webinar</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -168,6 +187,8 @@
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h5 class="mb-0" class="card-header">Data Pencapaian Mahasiswa</h5>
+                            <a href="/excel/download"s class="btn btn-sm btn-secondary float-end"><i class="bx bx-export"></i> Download Format</a>
+
                         </div>
 
                         <div class="card-body">
@@ -201,143 +222,145 @@
     </div>
     <!-- / Content -->
     
-    {% block additionalscripts %}
-       
-        <!-- Vendors JS -->
-        {# <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script> #}
-        {# <script src="{{ url_for('static', filename='vendor/libs/apex-charts/apexcharts.js') }}"></script> #}
-        <!-- Page JS -->
-        <script src="{{ url_for('static', filename='js/dashboards-analytics.js') }}"></script>
-        <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+{% endblock %}
 
-        <script>
-            $(document).ready(function() {
-                $('.my_selection').select2();
+{% block additionalscripts %}
+    
+    <!-- Vendors JS -->
+    <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
+    {# <script src="{{ url_for('static', filename='vendor/libs/apex-charts/apexcharts.js') }}"></script> #}
+    <!-- Page JS -->
+    <script src="{{ url_for('static', filename='js/dashboards-analytics.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.my_selection').select2();
+        });
+        $('#button-single-import').on('click', function (e) {
+            e.preventDefault()
+            $('#form-single-import').removeClass('d-none')
+            $('#form-import-batch').addClass('d-none')
+            $(this).addClass('active')
+            $('#button-import-batch').removeClass('active')
+        })
+        $('#button-import-batch').on('click', function (e) {
+            e.preventDefault()
+            $('#form-import-batch').removeClass('d-none')
+            $('#form-single-import').addClass('d-none')
+            $(this).addClass('active')
+            $('#button-single-import').removeClass('active')
+        })
+        $('.nim').change(function() {
+            $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
+                $.each( data['data'], function( key, value ) {
+                    $('#nim2').val(value.nim)
+                    $('#nama_lengkap').val(value.nama_lengkap)
+                    $('#alamat').val(value.jln)
+                    $('#penghasilan_ortu').val(value.penghasilan_ayah)
+                    $('#pekerjaan_ortu').val(value.pekerjaan_ayah)
+                    $('#jk').val(value.jk)
+                    let state = (value.status_mahasiswa == 'A') ? 'Aktif' : 'Tidak Aktif';
+                    $('#status_mahasiswa').val(state)
+                    $('#batch_year').val(value.tahun_masuk)
+                })
             });
-            $('#button-single-import').on('click', function (e) {
-                e.preventDefault()
-                $('#form-single-import').removeClass('d-none')
-                $('#form-import-batch').addClass('d-none')
-                $(this).addClass('active')
-                $('#button-import-batch').removeClass('active')
-            })
-            $('#button-import-batch').on('click', function (e) {
-                e.preventDefault()
-                $('#form-import-batch').removeClass('d-none')
-                $('#form-single-import').addClass('d-none')
-                $(this).addClass('active')
-                $('#button-single-import').removeClass('active')
-            })
-            $('.nim').change(function() {
-                $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
-                    $.each( data['data'], function( key, value ) {
-                        $('#nim2').val(value.nim)
-                        $('#nama_lengkap').val(value.nama_lengkap)
-                        $('#alamat').val(value.jln)
-                        $('#penghasilan_ortu').val(value.penghasilan_ayah)
-                        $('#pekerjaan_ortu').val(value.pekerjaan_ayah)
-                        $('#jk').val(value.jk)
-                        let state = (value.status_mahasiswa == 'A') ? 'Aktif' : 'Tidak Aktif';
-                        $('#status_mahasiswa').val(state)
-                        $('#batch_year').val(value.tahun_masuk)
-                    })
-                });
 
-                $.get('/get_achievement?nim='+$('#select2-nim-container').text(), function(data) {
-                    $.each( data, function( key, value ) {
-                        $('#prestasi').val(value.prestasi)
-                        $('#organisasi').val(value.organisasi)
-                        $('#sertifikat').val(value.sertifikat)
-                        $('#ipk').val(value.gpa_score)
-                    })
-                });
-            })
-            // INPUT PRESTASI 
-            $('#btn-plus-input-prestasi').click(function() {
-                el =
-                `<div class="row mb-2 input-prestasi">
-                    <div class="col-md-6">
-                        <input name="prestasi" placeholder="Nama prestasi" id="prestasi" class="form-control" value="{{mahasiswa.prestasi}}">
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-control">
-                            <option>-- Pilih Jenis Prestasi --</option>
-                            <option>Tingkat Internasional</option>
-                            <option>Tingkat Nasional</option>
-                            <option>Tingkat Regional</option>
-                        </select>
-                    </div>
-                </div>`;
-                $(el).insertBefore($('.input-prestasi').first())
-            })
-            $('#btn-min-input-prestasi').click(function() {
-                if ( $('.input-prestasi').length > 1 ) {
-                    $('.input-prestasi').first().remove()
-                }  
-            })
-            // INPUT ORGANISASI 
-            $('#btn-plus-input-organisasi').click(function() {
-                el =
-                `<div class="row mb-2 input-organisasi">
-                    <div class="col-md-6">
-                        <input name="organisasi" placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-control">
-                            <option>-- Pilih Jenis  --</option>
-                            <option>Pengurus</option>
-                            <option>Anggota</option>
-                        </select>
-                    </div>
-                </div>`;
-                $(el).insertBefore($('.input-organisasi').first())
-            })
-            $('#btn-min-input-organisasi').click(function() {
-                if ( $('.input-organisasi').length > 1 ) {
-                    $('.input-organisasi').first().remove()
-                }  
-            })
-            // INPUT SERTIFIKAT 
-            $('#btn-plus-input-sertifikat').click(function() {
-                el =
-                `<div class="row mb-2 input-sertifikat">
-                    <div class="col-md-6">
-                        <input name="sertifikat" placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-control">
-                            <option>-- Pilih Jenis Sertifikat --</option>
-                            <option>Sertifikat Keahlian</option>
-                            <option>Sertifikat Kursus</option>
-                            <option>Sertifikat Seminar/Webinar</option>
-                        </select>
-                    </div>
-                </div>`;
-                $(el).insertBefore($('.input-sertifikat').first())
-            })
-            $('#btn-min-input-sertifikat').click(function() {
-                if ( $('.input-sertifikat').length > 1 ) {
-                    $('.input-sertifikat').first().remove()
-                }  
-            })
+            $.get('/get_achievement?nim='+$('#select2-nim-container').text(), function(data) {
+                $.each( data, function( key, value ) {
+                    $('#prestasi').val(value.prestasi)
+                    $('#organisasi').val(value.organisasi)
+                    $('#sertifikat').val(value.sertifikat)
+                    $('#ipk').val(value.gpa_score)
+                })
+            });
+        })
+        // INPUT PRESTASI 
+        $('#btn-plus-input-prestasi').click(function() {
+            el =
+            `<div class="row mb-2 input-prestasi">
+                <div class="col-md-6">
+                    <input placeholder="Nama prestasi" id="prestasi" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-control" name="prestasi">
+                        <option value="0">-- Pilih Jenis Prestasi --</option>
+                        <option value="3">Tingkat Internasional</option>
+                        <option value="2">Tingkat Nasional</option>
+                        <option value="1">Tingkat Regional</option>
+                    </select>
+                </div>
+            </div>`;
+            $(el).insertBefore($('.input-prestasi').first())
+        })
+        $('#btn-min-input-prestasi').click(function() {
+            if ( $('.input-prestasi').length > 1 ) {
+                $('.input-prestasi').first().remove()
+            }  
+        })
+        // INPUT ORGANISASI 
+        $('#btn-plus-input-organisasi').click(function() {
+            el =
+            `<div class="row mb-2 input-organisasi">
+                <div class="col-md-6">
+                    <input placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-control" name="organisasi">
+                        <option value="0">-- Pilih Jenis  --</option>
+                        <option value="2">Pengurus</option>
+                        <option value="1">Anggota</option>
+                    </select>
+                </div>
+            </div>`;
+            $(el).insertBefore($('.input-organisasi').first())
+            console.log("masa 2 kali")
+        })
+        $('#btn-min-input-organisasi').click(function() {
+            if ( $('.input-organisasi').length > 1 ) {
+                $('.input-organisasi').first().remove()
+            }  
+        })
+        // INPUT SERTIFIKAT 
+        $('#btn-plus-input-sertifikat').click(function() {
+            el =
+            `<div class="row mb-2 input-sertifikat">
+                <div class="col-md-6">
+                    <input placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-control" name="sertifikat">
+                        <option value="0">-- Pilih Jenis Sertifikat --</option>
+                        <option value="3">Sertifikat Keahlian</option>
+                        <option value="2">Sertifikat Kursus</option>
+                        <option value="1">Sertifikat Seminar/Webinar</option>
+                    </select>
+                </div>
+            </div>`;
+            $(el).insertBefore($('.input-sertifikat').first())
+        })
+        $('#btn-min-input-sertifikat').click(function() {
+            if ( $('.input-sertifikat').length > 1 ) {
+                $('.input-sertifikat').first().remove()
+            }  
+        })
 
-            //$('#form-import-batch').on('submit', function(e) {
-            //    e.preventDefault()
-            //    console.log(new FormData(this))
-            //  $.ajax({
-            //      type: "POST",
-            //      url: "/input_batch", 
-            //      processData: false,
-            //      contentType: false,
-            //      dataType : 'json',          
-            //      data: new FormData(this),
-            //      success: function (result) {
-            //          alert(result);
-            //      }
-            //  });
-            //})
-            
-        </script>
+        //$('#form-import-batch').on('submit', function(e) {
+        //    e.preventDefault()
+        //    console.log(new FormData(this))
+        //  $.ajax({
+        //      type: "POST",
+        //      url: "/input_batch", 
+        //      processData: false,
+        //      contentType: false,
+        //      dataType : 'json',          
+        //      data: new FormData(this),
+        //      success: function (result) {
+        //          alert(result);
+        //      }
+        //  });
+        //})
+        
+    </script>
 
-    {% endblock %}
 {% endblock %}

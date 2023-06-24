@@ -1,7 +1,7 @@
 """Database models."""
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
-from sqlalchemy import Integer, ForeignKey, String, Column
+from sqlalchemy import Integer, ForeignKey, String, Column, Enum
 from sqlalchemy.orm import relationship
 
 from . import db, Base
@@ -11,7 +11,7 @@ class User(UserMixin, db.Model):
     """User account model."""
 
     __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=False)
     email = db.Column(db.String(40), unique=True, nullable=False)
     password = db.Column(
@@ -60,14 +60,19 @@ class Mahasiswa(db.Model):
     gpa_score = db.Column(db.Float, nullable=True)
     toefl_score = db.Column(db.Float, nullable=True)
     parents_income = db.Column(db.Float, nullable=True)
+    pekerjaan_ortu = db.Column(db.String(70), nullable=True)
     # geographic information
     address = db.Column(db.Text, nullable=True)
+
     # private information
     # phone
     # tambahan
     sertifikat = db.Column(db.Integer, nullable=True)
     prestasi = db.Column(db.Integer, nullable=True)
     organisasi = db.Column(db.Integer, nullable=True)
+    relevan = db.Column(db.Boolean, unique=False, nullable=True)
+    predict_proba = db.Column(db.Integer, nullable=True)
+    
 
     def __repr__(self):
         return "<User(name='%s', nim='%s', status='%s')>" % (
@@ -87,15 +92,44 @@ class Mahasiswa(db.Model):
     
 class Prodi(db.Model):
     __tablename__ = "prodi"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nama_prodi = db.Column(db.String(50))
     kode_prodi = db.Column(db.String(5))
-    user_prodi = relationship("User")
     
     def __repr__(self):
-        return "<Prodi(user_prodi='%s', nama_prodi='%s', kode_prodi='%s')>" % (
-            self.user_prodi,
+        return "<Prodi(nama_prodi='%s', kode_prodi='%s')>" % (
             self.nama_prodi,
             self.kode_prodi,
         )
+    
+class AdminProdi(db.Model):
+    __tablename__ = "admin_prodi"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
+    prodi_id = db.Column(db.Integer, db.ForeignKey(Prodi.id), primary_key=True)
+    def __repr__(self):
+        return "<AdminProdi(user_id='%s', prodi_id='%s')>" % (
+            self.user_id,
+            self.prodi_id,
+        )
+
+class Prestasi(db.Model):
+    __tablename__ = "prestasi"
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    nama_prestasi = db.Column(db.String(70))
+    jenis_prestasi = db.Column(db.Integer)
+
+class Sertifikat(db.Model):
+    __tablename__ = "sertifikat"
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    nama_sertifikat = db.Column(db.String(70))
+    jenis_sertifikat = db.Column(db.Integer)
+
+class Organisasi(db.Model):
+    __tablename__ = "organisasi"
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    nama_organisasi = db.Column(db.String(70))
+    peran_organisasi = db.Column(db.Integer)
+
+    
+    

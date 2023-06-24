@@ -1,0 +1,50 @@
+{%extends "layout_dashboard.jinja2" %}
+{%block pagestyles %}
+
+{% endblock %}
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="d-flex align-items-end row">
+        <div class="col-8">
+            <div class="card-body">
+            <h6 class="card-title mb-1 text-nowrap">Congratulations Katie!</h6>
+            <small class="d-block mb-3 text-nowrap">Best seller of the month</small>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+
+            </div>
+        </div>
+        <div class="col-4 pt-3 ps-0">
+            <img src="{{ url_for('static', filename='img/illustrations/prize-light.png') }}" width="90" height="140" class="rounded-start" alt="View Sales">
+        </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="d-flex align-items-end row">
+        <div class="col-4 pt-3 text-center">
+          <img src="{{ url_for('static', filename='img/illustrations/superman-flying-light.png') }}" width="90" height="140" class="rounded-start" alt="View Sales">
+        </div>
+        <div class="col-8">
+          <div class="card-body">
+          <h6 class="card-title mb-1 text-nowrap">Congratulations Katie!</h6>
+          <small class="d-block mb-3 text-nowrap">Best seller of the month</small>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+{% endblock %}

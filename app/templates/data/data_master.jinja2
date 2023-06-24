@@ -51,61 +51,86 @@
             </tr>
         </thead>
         <tbody class="table-border-bottom-0 table-content">
+            {% for mhs in mahasiswa %}
+                <tr>
+                    <td>{{mhs.id}}</td>
+                    <td>{{mhs.nama}}</td>
+                    <td>{{mhs.nim}}</td>
+                    <td>{{mhs.status}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/basic_input?nim={{mhs.nim}}"
+                                ><i class="bx bx-edit-alt me-1"></i> Lengkapi Data</a
+                                >
+                                <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-trash me-1"></i> Reset Data</a
+                                >
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
         </table>
     </div>
     </div>
 
 </div>
-    <!--/ Basic Bootstrap Table -->
-    {% block additionalscripts %}
+<!--/ Basic Bootstrap Table -->
+{% endblock %}
+{% block additionalscripts %}
+    <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
 
-        <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='vendor/js/datatables.js') }}"></script>
-        
-        <script>
-            $(document).ready(function() {
-                $('.my_selection').select2();
-                let datatable = $('.table-data-master').DataTable(
-                    {"paging": true}
-                );
-            });
-            $('#prodi').change(function() {
-                $.get("/get_mhs_by_tahun_prodi?tahun="+$('#tahun_angkatan').val()+"&prodi="+$('#prodi').val(), function(data) {
-                    let html = ``;
-                    let i = 1;
-                    
-                    $.each( data['data'], function( key, value ) {
-                        html += `<tr>
-                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> ${i}</td>
-                                    <td>${value.nim}</td>
-                                    <td>${value.nama_lengkap}</td>
-                                    <td><span class="badge bg-label-${value.status_mahasiswa == 'A' ? 'primary' : 'secondary'} me-1">${value.status_mahasiswa == 'A' ? 'Aktif' : 'Tidak aktif'}</span></td>
-                                    <td>
-                                        <div class="dropdown">
-                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="/basic_input?nim=${value.nim}"
-                                            ><i class="bx bx-edit-alt me-1"></i> Lengkapi Data</a
-                                            >
-                                            <a class="dropdown-item" href="javascript:void(0);"
-                                            ><i class="bx bx-trash me-1"></i> Reset Data</a
-                                            >
-                                        </div>
-                                        </div>
-                                    </td>
-                                </tr>`
-                        i++;
-                    });
-                    $('.table-data-master').DataTable().destroy()
-                    $('.table-content').html(html)
-                    $('.table-data-master').DataTable()
+    <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/js/datatables.js') }}"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('.my_selection').select2();
 
+            //let datatable = $('.table-data-master').DataTable(
+            //    {"paging": true}
+            //);
+        });
+        $('#prodi').change(function() {
+            $.get("/get_mhs_by_tahun_prodi?tahun="+$('#tahun_angkatan').val()+"&prodi="+$('#prodi').val(), function(data) {
+                let html = ``;
+                let i = 1;
+                
+                $.each( data['data'], function( key, value ) {
+                    html += `<tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> ${i}</td>
+                                <td>${value.nim}</td>
+                                <td>${value.nama_lengkap}</td>
+                                <td><span class="badge bg-label-${value.status_mahasiswa == 'A' ? 'primary' : 'secondary'} me-1">${value.status_mahasiswa == 'A' ? 'Aktif' : 'Tidak aktif'}</span></td>
+                                <td>
+                                    <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/basic_input?nim=${value.nim}"
+                                        ><i class="bx bx-edit-alt me-1"></i> Lengkapi Data</a
+                                        >
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                        ><i class="bx bx-trash me-1"></i> Reset Data</a
+                                        >
+                                    </div>
+                                    </div>
+                                </td>
+                            </tr>`
+                    i++;
                 });
-            })
-        </script>
+                $('.table-data-master').DataTable().destroy()
+                $('.table-content').html(html)
+                $('.table-data-master').DataTable()
 
-    {% endblock %}
-{% endblock  %}
+            });
+        })
+    </script>
+
+{% endblock %}

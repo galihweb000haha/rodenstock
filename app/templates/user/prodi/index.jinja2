@@ -1,0 +1,127 @@
+{% extends "layout_dashboard.jinja2" %}
+{% block pagestyles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
+{% endblock %}
+{% block content %}
+<!-- Basic Bootstrap Table -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Program Studi</h5>
+                    <i class="bx bxs-graduation bx-border-circle bx-lg mb-2"></i>
+                    <p class="card-text">Tambah, hapus atau edit data program studi.</p>
+                    <a href="javascript:void(0)" class="btn btn-primary">Kelola Prodi</a>
+                </div>
+                <div class="card-footer text-muted">2 data prodi tersedia</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Admin Program Studi</h5>
+                    <i class="bx bxs-user bx-border-circle bx-lg mb-2"></i>
+                    <p class="card-text">Tambah, hapus atau edit data admin program studi.</p>
+                    <a href="javascript:void(0)" class="btn btn-primary">Kelola Admin Prodi</a>
+                </div>
+                <div class="card-footer text-muted">2 data admin prodi tersedia</div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!--/ Basic Bootstrap Table -->
+<!-- Modal -->
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modalCenterTitle">Tambah Admin Prodi</h5>
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+        ></button>
+        </div>
+        <form action="{{ url_for('prodi_bp.index') }}" method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="modal-body">
+                <div class="col-md-12 mb-3">
+                    <label for="prodi" class="form-label">Prodi</label>
+                    <select name="prodi" id="prodi" class="form-control">
+                        <option> -- Pilih prodi -- </option>
+                    </select>
+                </div>
+                <fieldset class="name col mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(placeholder='Nama Lengkap', class="form-control") }}
+                    {% if form.name.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="email col mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(placeholder='youremail@example.com', class="form-control") }}
+                    {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="password col mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                <fieldset class="confirm col mb-3">
+                    {{ form.confirm.label(class="form-label") }}
+                    {{ form.confirm(class="form-control") }}
+                    {% if form.confirm.errors %}
+                    <ul class="errors">
+                        {% for error in form.confirm.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Batal
+                </button>
+                <div class="submit-button">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+    {% block additionalscripts %}
+        <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('.my_selection').select2();
+            });
+        </script>
+    {% endblock %}
+{% endblock  %}

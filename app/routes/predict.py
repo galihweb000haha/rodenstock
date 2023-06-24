@@ -29,7 +29,7 @@ def model_prediction():
         gender = "L" if mahasiswa.gender else "P" 
         x_pred = pd.DataFrame([[gender, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["JK", "Sertifikat", "Prestasi", "Organisasi"])
         # predict
-        model = load_model("D:/galih/flasklogin-tutorial/app/model/model.pkl")
+        model = load_model("../model/best.pkl")
         res = model.predict(x_pred)[0]
         return jsonify({
             "status": 200,
@@ -43,7 +43,7 @@ def model_prediction():
 @predict_bp.route("/predict_multiple", methods=["GET"])
 def model_prediction_multiple():
     # load model
-    model = load_model("D:/galih/flasklogin-tutorial/app/model/model.pkl")
+    model = load_model("/opt/project_ta/siputa/app/model/best.pkl")
     results = []
     # search student by nim
     nims = request.args.get('nim')
@@ -52,11 +52,13 @@ def model_prediction_multiple():
         mahasiswa = Mahasiswa.query.filter_by(nim=nim).first()
         if mahasiswa:
             # prepare the data
-            gender = "L" if mahasiswa.gender else "P" 
-            x_pred = pd.DataFrame([[gender, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["JK", "Sertifikat", "Prestasi", "Organisasi"])
+            # gender = "L" if mahasiswa.gender else "P" 
+            x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
+            x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
+                        [1, 2, 2, 2, 3], inplace=True)
             # predict
             res = model.predict(x_pred)[0]
-            results.append(res)
+            results.append([nim, res])
         else:
             results.append("Data belum lengkap")
 
