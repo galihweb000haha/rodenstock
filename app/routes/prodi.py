@@ -21,7 +21,6 @@ def index():
     data_prodi = Prodi.query.all()
     data_admin_prodi = AdminProdi.query.join(User, AdminProdi.user_id==User.id).join(Prodi, AdminProdi.prodi_id==Prodi.id).all()
     
-    print("?>>>>>>>>>>>>>", data_admin_prodi)
     form = SignupForm()
     referrer = request.referrer
     
@@ -59,7 +58,78 @@ def index():
         data_admin_prodi=data_admin_prodi,
         form=form,
     )
+
+@prodi_bp.route("/prodi/kelola_prodi", methods=["GET", "POST"])
+@login_required
+def prodi():
+    data_prodi = Prodi.query.all()
+
+    form = SignupForm()
+
+    return render_template(
+        "user/prodi/prodi.jinja2",
+        title="Program Studi",
+        template="dashboard-template",
+        current_user=current_user,
+        data_prodi=data_prodi,
+        form=form,
+    )
+
+@prodi_bp.route("/prodi/kelola_admin", methods=["GET", "POST"])
+@login_required
+def admin_prodi():
+    # data_admin_prodi = AdminProdi.query.join(User, AdminProdi.user_id==User.id).join(Prodi, AdminProdi.prodi_id==Prodi.id).all()
+    data_admin_prodi = db.session.query(
+         AdminProdi, User, Prodi,
+    ).filter(
+         AdminProdi.user_id==User.id,
+    ).filter(
+         AdminProdi.prodi_id==Prodi.id,
+    ).all()    
+
+    dap_collect_properly = []
+
+    for dap in data_admin_prodi:
+        print("================", dap.AdminProdi.prodi_id, "=============")
+
+
+    form = SignupForm()
+    referrer = request.referrer
+    
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user is None:
+            # create new user
+            user = User(
+                name=form.name.data, email=form.email.data, level=2
+            )
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+
+            # create user prodi
+            prodi = Prodi(
+                user_id=user.id, nama_prodi="Teknik Informatika", kode_prodi="09"
+            )
+            db.session.add(prodi)
+            db.session.commit()
+            flash("User admin prodi berhasil dibuat.")
+            return redirect(referrer)
+
         
+        flash("Pengguna telah menggunakan email yang diinputkan.")
+        return redirect(referrer)
+    return render_template(
+        "user/prodi/admin_prodi.jinja2",
+        title="Admin Prodi",
+        template="dashboard-template",
+        current_user=current_user,
+        message="You are now logged in!",
+        data_admin_prodi=data_admin_prodi,
+        form=form,
+    )
+
+
 @prodi_bp.route("/delete_prodi/<int:user_id_param>", methods=["GET"])
 @login_required
 def delete_prodi(user_id_param):

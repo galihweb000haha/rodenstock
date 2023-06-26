@@ -48,7 +48,7 @@ class LoginForm(FlaskForm):
 
 class MahasiswaForm(FlaskForm):
     """ Input Data Mahasiswa """
-    list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
+    list_selection = [(t.id, str(t.nim) + '-' + t.name ) for t in Mahasiswa.query.all()]
     list_selection.insert(0, (None, 'Masukkan NIM atau Nama')) 
     nim = SelectField('nim', 
         choices=list_selection, validate_choice=False, validators=[Length(min=8, message="Jumlah NIM adalah 8"), Length(max=8, message="Jumlah NIM adalah 8"),])

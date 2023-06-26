@@ -115,21 +115,25 @@ class AdminProdi(db.Model):
 
 class Prestasi(db.Model):
     __tablename__ = "prestasi"
-    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id))
     nama_prestasi = db.Column(db.String(70))
     jenis_prestasi = db.Column(db.Integer)
 
 class Sertifikat(db.Model):
     __tablename__ = "sertifikat"
-    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id))
     nama_sertifikat = db.Column(db.String(70))
     jenis_sertifikat = db.Column(db.Integer)
 
 class Organisasi(db.Model):
     __tablename__ = "organisasi"
-    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mahasiswa_id = db.Column(db.Integer, db.ForeignKey(Mahasiswa.id))
     nama_organisasi = db.Column(db.String(70))
     peran_organisasi = db.Column(db.Integer)
+
 
     
     

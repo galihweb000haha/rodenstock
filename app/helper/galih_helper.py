@@ -63,7 +63,7 @@ class Pembobotan():
         # ]
         count_sertifikat = 0
         for sertifikat in list_sertifikat:
-            count_sertifikat += int(sertifikat[1])
+            count_sertifikat += int(sertifikat)
 
         return count_sertifikat
 
@@ -74,7 +74,7 @@ class Pembobotan():
         # ]
         count_organisasi = 0
         for organisasi in list_organisasi:
-            count_organisasi += int(organisasi[1])
+            count_organisasi += int(organisasi)
 
         return count_organisasi
 
@@ -86,7 +86,7 @@ class Pembobotan():
         print( ">>>>>>>>>>>>>>>>>>>>>", list_prestasi, "<<<<<<<<<<<<<<<<<<")
         count_prestasi = 0
         for prestasi in list_prestasi:
-            count_prestasi += int(prestasi[1])
+            count_prestasi += int(prestasi)
 
         return count_prestasi
 

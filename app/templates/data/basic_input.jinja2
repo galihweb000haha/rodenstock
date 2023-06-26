@@ -120,54 +120,66 @@
                                             <label for="prestasi" class="mb-3">Prestasi/Penghargaan</label>
                                             <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-prestasi"><i class='bx bx-plus' ></i></div>
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-prestasi"><i class='bx bx-minus' ></i></div>
+
+                                            {% for pencapaian in data_pencapaian[0] %}
                                             <div class="row input-prestasi">
                                                 <div class="col-md-6">
-                                                    <input placeholder="Nama prestasi" id="prestasi" class="form-control">
+                                                    <input placeholder="Nama prestasi" id="prestasi" name="nama_prestasi" class="form-control" value="{{pencapaian.nama_prestasi}}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <select class="form-control" name="prestasi">
                                                         <option value="0">-- Pilih Jenis Prestasi --</option>
-                                                        <option value="3">Tingkat Internasional</option>
-                                                        <option value="2">Tingkat Nasional</option>
-                                                        <option value="1">Tingkat Regional</option>
+                                                        <option value="3" {% if (pencapaian.jenis_prestasi == 3) %} selected="selected" {% endif %}>Tingkat Internasional</option>
+                                                        <option value="2" {% if (pencapaian.jenis_prestasi == 2) %} selected="selected" {% endif %}>Tingkat Nasional</option>
+                                                        <option value="1" {% if (pencapaian.jenis_prestasi == 1) %} selected="selected" {% endif %}>Tingkat Regional</option>
                                                     </select>
                                                 </div>
                                             </div>
+                                            {% endfor %}
+
                                         </div>
                                         <div class="col-md-12 mb-2">
                                             <label for="organisasi" class="mb-3">Organisasi Mahasiswa</label>
                                             <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-organisasi"><i class='bx bx-plus' ></i></div>
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-organisasi"><i class='bx bx-minus' ></i></div>
+                                            
+                                            {% for pencapaian in data_pencapaian[1] %}
                                             <div class="row input-organisasi">
                                                 <div class="col-md-6">
-                                                    <input placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                                                    <input placeholder="Nama Organisasi" id="organisasi" name="nama_organisasi" class="form-control" value="{{pencapaian.nama_organisasi}}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <select class="form-control" name="organisasi">
                                                         <option value="0">-- Pilih Jenis  --</option>
-                                                        <option value="2">Pengurus</option>
-                                                        <option value="1">Anggota</option>
+                                                        <option value="2" {% if (pencapaian.peran_organisasi == 2) %} selected="selected" {% endif %}>Pengurus</option>
+                                                        <option value="1" {% if (pencapaian.peran_organisasi == 1) %} selected="selected" {% endif %}>Anggota</option>
                                                     </select>
                                                 </div>
                                             </div>
+                                            {% endfor %}
+
                                         </div>
                                         <div class="col-md-12 mb-2">
                                             <label for="sertifikat" class="mb-3">Sertifikat</label>
                                             <div class="btn btn-warning btn-sm float-end" id="btn-plus-input-sertifikat"><i class='bx bx-plus' ></i></div>
                                             <div class="btn btn-dark btn-sm float-end" id="btn-min-input-sertifikat"><i class='bx bx-minus' ></i></div>
+
+                                            {% for pencapaian in data_pencapaian[2] %}
                                             <div class="row input-sertifikat">
                                                 <div class="col-md-6">
-                                                    <input placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                                                    <input placeholder="Nama Sertifikat" id="sertifikat" name="nama_sertifikat" class="form-control" value="{{pencapaian.nama_sertifikat}}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <select class="form-control" name="sertifikat">
                                                         <option value="0">-- Pilih Jenis Sertifikat --</option>
-                                                        <option value="3">Sertifikat Keahlian</option>
-                                                        <option value="2">Sertifikat Kursus</option>
-                                                        <option value="1">Sertifikat Seminar/Webinar</option>
+                                                        <option value="3" {% if (pencapaian.jenis_sertifikat == 3) %} selected="selected" {% endif %}>Sertifikat Keahlian</option>
+                                                        <option value="2" {% if (pencapaian.jenis_sertifikat == 2) %} selected="selected" {% endif %}>Sertifikat Kursus</option>
+                                                        <option value="1" {% if (pencapaian.jenis_sertifikat == 1) %} selected="selected" {% endif %}>Sertifikat Seminar/Webinar</option>
                                                     </select>
                                                 </div>
                                             </div>
+                                            {% endfor %}
+
                                         </div>
                                     </div>
                                 </div>
@@ -252,35 +264,38 @@
             $('#button-single-import').removeClass('active')
         })
         $('.nim').change(function() {
-            $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
-                $.each( data['data'], function( key, value ) {
-                    $('#nim2').val(value.nim)
-                    $('#nama_lengkap').val(value.nama_lengkap)
-                    $('#alamat').val(value.jln)
-                    $('#penghasilan_ortu').val(value.penghasilan_ayah)
-                    $('#pekerjaan_ortu').val(value.pekerjaan_ayah)
-                    $('#jk').val(value.jk)
-                    let state = (value.status_mahasiswa == 'A') ? 'Aktif' : 'Tidak Aktif';
-                    $('#status_mahasiswa').val(state)
-                    $('#batch_year').val(value.tahun_masuk)
-                })
-            });
 
-            $.get('/get_achievement?nim='+$('#select2-nim-container').text(), function(data) {
-                $.each( data, function( key, value ) {
-                    $('#prestasi').val(value.prestasi)
-                    $('#organisasi').val(value.organisasi)
-                    $('#sertifikat').val(value.sertifikat)
-                    $('#ipk').val(value.gpa_score)
-                })
-            });
+            document.location.href = '/basic_input?nim=' + $('#select2-nim-container').text().split('-')[0]
+
+            // $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
+            //     $.each( data['data'], function( key, value ) {
+            //         $('#nim2').val(value.nim)
+            //         $('#nama_lengkap').val(value.nama_lengkap)
+            //         $('#alamat').val(value.jln)
+            //         $('#penghasilan_ortu').val(value.penghasilan_ayah)
+            //         $('#pekerjaan_ortu').val(value.pekerjaan_ayah)
+            //         $('#jk').val(value.jk)
+            //         let state = (value.status_mahasiswa == 'A') ? 'Aktif' : 'Tidak Aktif';
+            //         $('#status_mahasiswa').val(state)
+            //         $('#batch_year').val(value.tahun_masuk)
+            //     })
+            // });
+
+            // $.get('/get_achievement?nim='+$('#select2-nim-container').text(), function(data) {
+            //     $.each( data, function( key, value ) {
+            //         $('#prestasi').val(value.prestasi)
+            //         $('#organisasi').val(value.organisasi)
+            //         $('#sertifikat').val(value.sertifikat)
+            //         $('#ipk').val(value.gpa_score)
+            //     })
+            // });
         })
         // INPUT PRESTASI 
         $('#btn-plus-input-prestasi').click(function() {
             el =
             `<div class="row mb-2 input-prestasi">
                 <div class="col-md-6">
-                    <input placeholder="Nama prestasi" id="prestasi" class="form-control">
+                    <input placeholder="Nama prestasi" id="prestasi" name="nama_prestasi" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <select class="form-control" name="prestasi">
@@ -303,7 +318,7 @@
             el =
             `<div class="row mb-2 input-organisasi">
                 <div class="col-md-6">
-                    <input placeholder="Nama Organisasi" id="organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                    <input placeholder="Nama Organisasi" id="organisasi" name="nama_organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
                 </div>
                 <div class="col-md-6">
                     <select class="form-control" name="organisasi">
@@ -326,7 +341,7 @@
             el =
             `<div class="row mb-2 input-sertifikat">
                 <div class="col-md-6">
-                    <input placeholder="Nama Sertifikat" id="sertifikat" class="form-control" value="{{mahasiswa.sertifikat}}">
+                    <input placeholder="Nama Sertifikat" id="sertifikat" name="nama_prestasi" class="form-control" value="{{mahasiswa.sertifikat}}">
                 </div>
                 <div class="col-md-6">
                     <select class="form-control" name="sertifikat">

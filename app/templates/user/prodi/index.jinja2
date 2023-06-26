@@ -18,7 +18,7 @@
                     <h5 class="card-title">Program Studi</h5>
                     <i class="bx bxs-graduation bx-border-circle bx-lg mb-2"></i>
                     <p class="card-text">Tambah, hapus atau edit data program studi.</p>
-                    <a href="javascript:void(0)" class="btn btn-primary">Kelola Prodi</a>
+                    <a href="{{ url_for('prodi_bp.prodi') }}" class="btn btn-primary">Kelola Prodi</a>
                 </div>
                 <div class="card-footer text-muted">2 data prodi tersedia</div>
             </div>
@@ -29,7 +29,7 @@
                     <h5 class="card-title">Admin Program Studi</h5>
                     <i class="bx bxs-user bx-border-circle bx-lg mb-2"></i>
                     <p class="card-text">Tambah, hapus atau edit data admin program studi.</p>
-                    <a href="javascript:void(0)" class="btn btn-primary">Kelola Admin Prodi</a>
+                    <a href="{{ url_for('prodi_bp.admin_prodi') }}" class="btn btn-primary">Kelola Admin Prodi</a>
                 </div>
                 <div class="card-footer text-muted">2 data admin prodi tersedia</div>
             </div>

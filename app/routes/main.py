@@ -89,7 +89,23 @@ def basic_input():
     """Input Students Data"""
     form = MahasiswaForm()
     nim = request.args.get('nim')
-    mahasiswa = [] if not nim  else Mahasiswa.query.filter_by(nim=nim).first()
+    mahasiswa = [] if not nim else Mahasiswa.query.filter_by(nim=nim).first()
+
+    
+    if mahasiswa:
+        sertifikat = Sertifikat.query.filter_by(mahasiswa_id=mahasiswa.id).all()
+        organisasi = Organisasi.query.filter_by(mahasiswa_id=mahasiswa.id).all()
+        prestasi = Prestasi.query.filter_by(mahasiswa_id=mahasiswa.id).all()
+        
+        data_pencapaian = [prestasi, organisasi, sertifikat]
+    else:
+        data_pencapaian = []
+
+
+
+    print("===============", data_pencapaian, "=============")
+
+    
 
     # production --> start
     # detail_mahasiswa = {'data': [[]]} if not nim else galih_helper.Api.get_mhs(nim)
@@ -99,6 +115,8 @@ def basic_input():
     # development --> start
     detail_mahasiswa = [[]] if not nim else galih_helper.TestingApi.get_mhs_by_nim(nim)
     # development --> end
+    print("===========", detail_mahasiswa, "==============")
+
 
     # cuman buat pengingat
     list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
@@ -114,6 +132,7 @@ def basic_input():
         detail_mahasiswa=detail_mahasiswa,
         form=form,
         preview=None,
+        data_pencapaian=data_pencapaian,
     )
 
 @main_bp.route("/report", methods=["GET"])
@@ -235,12 +254,14 @@ def input_data():
     """Single Import"""
 
     # pembobotan terhadap attribut utama
-    
-    print("===================", request.form.getlist('prestasi'), "================")
-
     prestasi = galih_helper.Pembobotan.pembobotan_prestasi(request.form.getlist('prestasi'))
     organisasi = galih_helper.Pembobotan.pembobotan_organisasi(request.form.getlist('organisasi'))
     sertifikat = galih_helper.Pembobotan.pembobotan_sertifikat(request.form.getlist('sertifikat'))
+  
+    nama_prestasi = request.form.getlist('nama_prestasi')
+    nama_organisasi = request.form.getlist('nama_organisasi')
+    nama_sertifikat = request.form.getlist('nama_sertifikat')
+
     # attribut tambahan
     nim = request.form['nim2']
     name = request.form['nama']
@@ -250,8 +271,26 @@ def input_data():
     gpa_score = request.form['ipk']
     parents_income = request.form['parents_income']
     pekerjaan_ortu = request.form['pekerjaan_ortu']
-    
     data_mhs = Mahasiswa.query.filter_by(nim=nim).first()
+
+
+    # Masukkin achievement ke database
+    # 1. prestasi
+    for index, value in enumerate(request.form.getlist('prestasi')):
+        prestasi_store = Prestasi(mahasiswa_id=data_mhs.id, nama_prestasi=nama_prestasi[index], jenis_prestasi=value)
+        db.session.add(prestasi_store)
+        db.session.commit()
+    # 2. organisasi
+    for index, value in enumerate(request.form.getlist('organisasi')):
+        organisasi_store = Organisasi(mahasiswa_id=data_mhs.id, nama_organisasi=nama_organisasi[index], peran_organisasi=value)
+        db.session.add(organisasi_store)
+        db.session.commit()
+    # 3. Sertifikat
+    for index, value in enumerate(request.form.getlist('sertifikat')):
+        sertifikat_store = Sertifikat(mahasiswa_id=data_mhs.id, nama_sertifikat=nama_sertifikat[index], jenis_sertifikat=value)
+        db.session.add(sertifikat_store)
+        db.session.commit()
+    
 
     if not data_mhs:
         # create data
@@ -428,30 +467,38 @@ def handle_500(err):
     return render_template('500.jinja2'), 500
 
 # API INCOME OASE
+# @main_bp.route("/get_mhs", methods=["GET"])
+# def get_mhs():
+#     """ Get Mahasiswa From OASE """
+#     nim = request.args.get('nim')
+#     oase_key = '785a4062ab84fad16'
+#     api_server = 'https://localhost/OASE'
+#     response = requests.get("{api_server}/api/Mahasiswa/getMhsByNIMSiputa?oase_key={oase_key}&nim={nim}".format(nim=nim, oase_key=oase_key, api_server=api_server), verify=False)
+#     return response.json()
+
+# @main_bp.route("/get_tahun_angkatan", methods=["GET"])
+# def get_tahun_angkatan():
+#     """ Get Tahun Angkatan From OASE """
+#     oase_key = '785a4062ab84fad16'
+#     api_server = 'http://localhost:45275'
+#     response = requests.get("{api_server}/api/Mahasiswa/tahun_angkatan?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server))
+#     return response.text
+
+# @main_bp.route("/get_mhs_by_tahun_prodi", methods=["GET"])
+# def get_mhs_by_tahun_prodi():
+#     """ Get Mahasiswa From OASE """
+#     tahun = request.args.get('tahun')
+#     prodi = request.args.get('prodi')
+#     oase_key = '785a4062ab84fad16'
+#     api_server = 'https://localhost/OASE'
+    
+#     response = requests.get("{api_server}/api/Mahasiswa/getMahasiswaByTahunProdiSiputa?oase_key={oase_key}&tahun={tahun}&prodi={prodi}".format(tahun=tahun, prodi=prodi, oase_key=oase_key, api_server=api_server), verify=False)
+#     return response.json()
+
+# API INCOME BACKEND SIMULATION
 @main_bp.route("/get_mhs", methods=["GET"])
 def get_mhs():
-    """ Get Mahasiswa From OASE """
-    nim = request.args.get('nim')
-    oase_key = '785a4062ab84fad16'
-    api_server = 'https://localhost/OASE'
-    response = requests.get("{api_server}/api/Mahasiswa/getMhsByNIMSiputa?oase_key={oase_key}&nim={nim}".format(nim=nim, oase_key=oase_key, api_server=api_server), verify=False)
-    return response.json()
-
-@main_bp.route("/get_tahun_angkatan", methods=["GET"])
-def get_tahun_angkatan():
-    """ Get Tahun Angkatan From OASE """
-    oase_key = '785a4062ab84fad16'
-    api_server = 'http://localhost:45275'
-    response = requests.get("{api_server}/api/Mahasiswa/tahun_angkatan?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server))
-    return response.text
-
-@main_bp.route("/get_mhs_by_tahun_prodi", methods=["GET"])
-def get_mhs_by_tahun_prodi():
-    """ Get Mahasiswa From OASE """
-    tahun = request.args.get('tahun')
-    prodi = request.args.get('prodi')
-    oase_key = '785a4062ab84fad16'
-    api_server = 'https://localhost/OASE'
-    
-    response = requests.get("{api_server}/api/Mahasiswa/getMahasiswaByTahunProdiSiputa?oase_key={oase_key}&tahun={tahun}&prodi={prodi}".format(tahun=tahun, prodi=prodi, oase_key=oase_key, api_server=api_server), verify=False)
-    return response.json()
+    nim_name = request.args.get('nim')
+    nim = nim_name.split('-')[0]
+    data = []
+    return galih_helper.TestingApi.get_mhs_by_nim(nim)
