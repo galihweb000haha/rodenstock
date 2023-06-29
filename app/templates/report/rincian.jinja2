@@ -20,11 +20,12 @@
                     </div>
                     <div class="col-8">
                         <ul class="list-group list-group-flush">
-                        
-                            <li class="list-group-item">18090125</li>
-                            <li class="list-group-item">Dwi Febi Fauzi</li>
-                            <li class="list-group-item">Laki-laki</li>
-                            <li class="list-group-item">Jalan Pusponegoro 1, Desa Pekauman Rt 06 Rw 02</li>
+                            <li class="list-group-item">{{mhs.nim}}</li>
+                            <li class="list-group-item">{{mhs.name}}</li>
+                            <li class="list-group-item">{% if mhs.gender %} Laki-laki {% else %} Perempuan {% endif %}</li>
+                            <li class="list-group-item">
+                                {% if mhs.address %}{{mhs.address}}{% endif %}
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -51,11 +52,20 @@
                             </div>
                             <div class="col-8">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">3.67</li>
+                                    <li class="list-group-item">{{mhs.gpa_score}}</li>
                                     <li class="list-group-item">
                                         <ol>
-                                            <li>Juara 3 Lomba Hology 3.0 Katagori App Inovation Tingkat Nasional </li>
-                                            <li>Juara 1 Showcase Competition UINIC 4.0 Tingkat Nasional</li>
+                                            {% for pres in informasi_tambahan.prestasi %}
+                                                <li>{{pres.nama_prestasi}} 
+                                                {% if pres.jenis_prestasi == 3 %}
+                                                    Tingkat Internasional
+                                                {% elif pres.jenis_prestasi == 2 %}
+                                                    Tingkat Nasional
+                                                {% else %}
+                                                    Tingkat Regional
+                                                {% endif %}
+                                                </li>
+                                            {% endfor %}
                                         </ol>
                                     </li>
                                 </ul>
@@ -78,10 +88,18 @@
                                         </ul>
                                     </div>
                                     <div class="col-7">
+                                        {% for org in informasi_tambahan.organisasi %}
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Himpunan Mahasiswa Program Studi Teknik Informatika</li>
-                                            <li class="list-group-item">Anggota</li>
+                                            <li class="list-group-item">{{org.nama_organisasi}}</li>
+                                            <li class="list-group-item">
+                                            {% if org.peran_organisasi == 1 %}
+                                                Anggota
+                                            {% else %}
+                                                Pengurus
+                                            {% endif %}
+                                            </li>
                                         </ul>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </li>
@@ -104,8 +122,8 @@
                             </div>
                             <div class="col-8">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Tidak disebutkan</li>
-                                    <li class="list-group-item">< Rp. 1.000.000,00</li>
+                                    <li class="list-group-item">{{mhs.pekerjaan_ortu}}</li>
+                                    <li class="list-group-item">{{help.format_rupiah(mhs.parents_income)}}</li>
                                 </ul>
                             </div>
                         </div>
@@ -117,6 +135,7 @@
                     <div class="card-body">
                         <h6 class="card-title mb-1 text-nowrap">Data Pengalaman & Pelatihan</h6>
                         <ol>
+                            {% for serti in informasi_tambahan.sertifikat %}
                             <li>
                                 <div class="row">
                                     <div class="col-5">
@@ -127,44 +146,21 @@
                                     </div>
                                     <div class="col-7">
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Oracle Database Programming with PL/SQL</li>
-                                            <li class="list-group-item">Sertifikat Keahlian</li>
+                                            <li class="list-group-item">{{serti.nama_sertifikat}}</li>
+                                            <li class="list-group-item">
+                                                {% if serti.jenis_sertifikat == 1 %}
+                                                    Tingkat Seminar/Webinar
+                                                {% elif serti.jenis_sertifikat == 2 %}
+                                                    Tingkat Kursus
+                                                {% else %}
+                                                    Tingkat Keahlian
+                                                {% endif %}
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="row">
-                                    <div class="col-5">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Nama Sertifikat</li>
-                                            <li class="list-group-item">Jenis Sertifikat</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-7">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Oracle Database Design and Programming with SQL</li>
-                                            <li class="list-group-item">Sertifikat Keahlian</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="row">
-                                    <div class="col-5">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Nama Sertifikat</li>
-                                            <li class="list-group-item">Jenis Sertifikat</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-7">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Java Fundamentals</li>
-                                            <li class="list-group-item">Sertifikat Keahlian</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
+                            {% endfor %}
                         </ol>
                     </div>
                 </div>

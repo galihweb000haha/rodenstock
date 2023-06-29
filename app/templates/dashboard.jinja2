@@ -22,7 +22,7 @@
                             Dapatkan analisis yang mendalam dengan memberikan kami informasi pencapaian mahasiswa. Mulailah menyiapkan data yang tersedia!
                         </p>
 
-                        <a href="javascript:;" class="btn btn-sm btn-outline-primary">Mulai Disini</a>
+                        <a href="{{ url_for('main_bp.basic_input') }}" class="btn btn-sm btn-outline-primary">Mulai Disini</a>
                     </div>
                     </div>
                     <div class="col-sm-5 text-center text-sm-left">
@@ -50,7 +50,7 @@
                             <div class="content-left">
                               <span>Admin Prodi</span>
                               <div class="d-flex align-items-end mt-2">
-                                <h4 class="mb-0 me-2">42</h4>
+                                <h4 class="mb-0 me-2">{{panel_card.admin_prodi_ammount}}</h4>
                               </div>
                               <small>Total Users</small>
                             </div>
@@ -86,7 +86,7 @@
                             <div class="content-left">
                               <span>Sudah Terisi</span>
                               <div class="d-flex align-items-end mt-2">
-                                <h4 class="mb-0 me-2">1,860</h4>
+                                <h4 class="mb-0 me-2">{{panel_card.mahasiswa_ammount}}</h4>
                               </div>
                               <small>Total Data</small>
                             </div>

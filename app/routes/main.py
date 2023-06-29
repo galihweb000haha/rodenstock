@@ -16,8 +16,10 @@ from app.models import Mahasiswa
 from app.models import Prestasi
 from app.models import Organisasi
 from app.models import Sertifikat
+from app.models import AdminProdi
 
 from app.forms import MahasiswaForm
+from app.forms import ReportSelectionForm
 from app.helper import galih_helper
 
 # Blueprint Configuration
@@ -30,7 +32,14 @@ main_bp = Blueprint(
 def dashboard():
     """Logged-in User Dashboard."""
 
+    # panel card information
+    ammount_admin = AdminProdi.query.count()
     datas = Mahasiswa.query.all()
+    panel_card = ({
+        'admin_prodi_ammount': ammount_admin,
+        'mahasiswa_ammount': len(datas)
+    })
+    
     relevan_count = 0
     tidak_relevan_count = 0
     for data in datas:
@@ -50,6 +59,7 @@ def dashboard():
         message="You are now logged in!",
         relevan_percentage=relevan_percentage, 
         tidak_relevan_percentage=tidak_relevan_percentage,
+        panel_card=panel_card,
     )
 
 # @main_bp.route("/prodi", methods=["GET"])
@@ -100,12 +110,6 @@ def basic_input():
         data_pencapaian = [prestasi, organisasi, sertifikat]
     else:
         data_pencapaian = []
-
-
-
-    print("===============", data_pencapaian, "=============")
-
-    
 
     # production --> start
     # detail_mahasiswa = {'data': [[]]} if not nim else galih_helper.Api.get_mhs(nim)
@@ -160,6 +164,9 @@ def report():
     #     },
     # ]
     # INI NGAMBIL DARI DATABASE SAJA YAK!!!!!!
+    batch_year = db.session.query(Mahasiswa.batch_year).group_by(Mahasiswa.batch_year).all()
+
+    form = ReportSelectionForm()
     nims = Mahasiswa.query.with_entities(Mahasiswa.nim).all()
     data = galih_helper.PredictModel.predict_multiple(nims)
     
@@ -169,17 +176,35 @@ def report():
         title="Report",
         template="dashboard-template",
         datas=data,
-        current_user=current_user
+        current_user=current_user,
+        form=form,
     )
 
-@main_bp.route("/report/rincian", methods=["GET"])
+@main_bp.route("/report/rincian/<nim>", methods=["GET"])
 @login_required
-def rincian():
+def rincian(nim):
+    mhs = Mahasiswa.query.filter_by(nim=nim).all()[0]
+
+    # attribut utama  
+    sertifikat = Sertifikat.query.filter_by(mahasiswa_id=mhs.id).all() 
+    prestasi = Prestasi.query.filter_by(mahasiswa_id=mhs.id).all() 
+    organisasi = Organisasi.query.filter_by(mahasiswa_id=mhs.id).all() 
+
+    help = galih_helper.Utility
+    informasi_tambahan = ({
+        'sertifikat': sertifikat,
+        'prestasi': prestasi,
+        'organisasi': organisasi,
+    })
+
     return render_template(
         "report/rincian.jinja2",
         title="Report",
         template="dashboard-template",
-        current_user=current_user
+        mhs=mhs,
+        informasi_tambahan=informasi_tambahan,
+        current_user=current_user,
+        help=help,
     )
 
 @main_bp.route("/excel/download")

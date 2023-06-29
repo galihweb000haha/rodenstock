@@ -120,6 +120,7 @@ class PredictModel():
                 res = model.predict(x_pred)[0]
                 data_result = {
                         "nama": mahasiswa.name,
+                        "nim": mahasiswa.nim,
                         "semester": 8,
                         "prodi": "Teknik Informatika",
                         "relevan": res
@@ -129,4 +130,22 @@ class PredictModel():
         return results
             
     
+class Utility():
+    def format_rupiah(nominal):
+    # Mengecek apakah nominal negatif atau positif
+        if nominal < 0:
+            is_negative = True
+            nominal = abs(nominal)
+        else:
+            is_negative = False
 
+        # Mengonversi nominal menjadi string dan menambahkan desimal dengan 2 digit
+        nominal_str = "{:,.2f}".format(nominal)
+
+        # Membuat format rupiah dengan menambahkan "Rp" di depan dan tanda "-" jika negatif
+        if is_negative:
+            nominal_str = "Rp" + "-" + nominal_str
+        else:
+            nominal_str = "Rp" + nominal_str
+
+        return nominal_str

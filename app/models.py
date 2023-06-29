@@ -55,7 +55,7 @@ class Mahasiswa(db.Model):
     name = db.Column(db.String(50))
     state = db.Column(db.String(20), nullable=True)
     gender = db.Column(db.Boolean, unique=False, nullable=True)
-    batch_year = db.Column(db.DateTime, nullable=True)
+    batch_year = db.Column(db.String(4), nullable=True)
     # secondary information
     gpa_score = db.Column(db.Float, nullable=True)
     toefl_score = db.Column(db.Float, nullable=True)
@@ -73,9 +73,10 @@ class Mahasiswa(db.Model):
     relevan = db.Column(db.Boolean, unique=False, nullable=True)
     predict_proba = db.Column(db.Integer, nullable=True)
     
+    
 
     def __repr__(self):
-        return "<User(name='%s', nim='%s', status='%s')>" % (
+        return "<Mahasiswa(name='%s', nim='%s', status='%s')>" % (
             self.name,
             self.nim,
             self.state,

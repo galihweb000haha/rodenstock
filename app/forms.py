@@ -3,7 +3,9 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
-from .models import Mahasiswa
+from .models import Mahasiswa, Prodi
+
+from . import db
 
 
 class SignupForm(FlaskForm):
@@ -53,3 +55,17 @@ class MahasiswaForm(FlaskForm):
     nim = SelectField('nim', 
         choices=list_selection, validate_choice=False, validators=[Length(min=8, message="Jumlah NIM adalah 8"), Length(max=8, message="Jumlah NIM adalah 8"),])
     submit = SubmitField("Simpan")
+
+class ReportSelectionForm(FlaskForm):
+    list_selection = [(t.kode_prodi, str(t.nama_prodi) ) for t in Prodi.query.all()]
+    list_selection.insert(0, (None, '-- Pilih Program Studi --')) 
+    prodi = SelectField('prodi', choices=list_selection)
+
+    batch_year = db.session.query(Mahasiswa.batch_year).group_by(Mahasiswa.batch_year).all()
+    list_selection = [(t[0], str(t[0]) ) for t in batch_year]
+    list_selection.insert(0, (None, '-- Pilih Tahun Akademik --')) 
+    batch_year = SelectField('batch_year', choices=list_selection)
+
+
+
+    
