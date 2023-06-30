@@ -95,7 +95,7 @@ class Prodi(db.Model):
     __tablename__ = "prodi"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nama_prodi = db.Column(db.String(50))
-    kode_prodi = db.Column(db.String(5))
+    kode_prodi = db.Column(db.String(5), index=True)
     
     def __repr__(self):
         return "<Prodi(nama_prodi='%s', kode_prodi='%s')>" % (
@@ -107,11 +107,11 @@ class AdminProdi(db.Model):
     __tablename__ = "admin_prodi"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
-    prodi_id = db.Column(db.Integer, db.ForeignKey(Prodi.id), primary_key=True)
+    kode_prodi = db.Column(db.String(2), db.ForeignKey(Prodi.kode_prodi), primary_key=True)
     def __repr__(self):
         return "<AdminProdi(user_id='%s', prodi_id='%s')>" % (
             self.user_id,
-            self.prodi_id,
+            self.kode_prodi,
         )
 
 class Prestasi(db.Model):

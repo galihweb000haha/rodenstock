@@ -43,7 +43,7 @@
                                             <a class="dropdown-item" href="javascript:void(0);"
                                             ><i class="bx bx-key me-1"></i> Reset Password</a
                                             >
-                                            <a class="dropdown-item" href="/delete_prodi/{{prodi.id}}"
+                                            <a class="dropdown-item" href="/prodi/delete_admin/{{prodi.User.id}}"
                                             ><i class="bx bx-trash me-1"></i> Hapus Akun</a
                                             >
                                         </div>
@@ -73,15 +73,19 @@
             aria-label="Close"
         ></button>
         </div>
-        <form action="{{ url_for('prodi_bp.index') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url_for('prodi_bp.admin_prodi') }}" method="post" enctype="multipart/form-data">
             {{ form.csrf_token }}
             <div class="modal-body">
-                <div class="col-md-12 mb-3">
-                    <label for="prodi" class="form-label">Prodi</label>
-                    <select name="prodi" id="prodi" class="form-control">
-                        <option> -- Pilih prodi -- </option>
-                    </select>
-                </div>
+                <fieldset class="prodi col mb-3">
+                    {{ form.prodi.label(class="form-label") }}
+                    {{ form.prodi(class='form-control') }}
+                    {% if form.prodi.errors %}
+                    <ul class="errors">
+                        {% for error in form.prodi.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
                 <fieldset class="name col mb-3">
                     {{ form.name.label(class="form-label") }}
                     {{ form.name(placeholder='Nama Lengkap', class="form-control") }}

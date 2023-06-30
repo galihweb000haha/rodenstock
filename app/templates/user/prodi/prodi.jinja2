@@ -40,11 +40,8 @@
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="javascript:void(0);"
-                                            ><i class="bx bx-key me-1"></i> Reset Password</a
-                                            >
-                                            <a class="dropdown-item" href="/delete_prodi/{{prodi.id}}"
-                                            ><i class="bx bx-trash me-1"></i> Hapus Akun</a
+                                            <a class="dropdown-item" href="/prodi/delete_prodi/{{prodi.kode_prodi}}"
+                                            ><i class="bx bx-trash me-1"></i> Hapus Prodi</a
                                             >
                                         </div>
                                     </div>
@@ -73,51 +70,25 @@
             aria-label="Close"
         ></button>
         </div>
-        <form action="{{ url_for('prodi_bp.index') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url_for('prodi_bp.prodi') }}" method="post" enctype="multipart/form-data">
             {{ form.csrf_token }}
             <div class="modal-body">
-                <div class="col-md-12 mb-3">
-                    <label for="prodi" class="form-label">Prodi</label>
-                    <select name="prodi" id="prodi" class="form-control">
-                        <option> -- Pilih prodi -- </option>
-                    </select>
-                </div>
                 <fieldset class="name col mb-3">
                     {{ form.name.label(class="form-label") }}
-                    {{ form.name(placeholder='Nama Lengkap', class="form-control") }}
+                    {{ form.name(placeholder='Nama Prodi', class="form-control") }}
                     {% if form.name.errors %}
                     <ul class="errors">
-                        {% for error in form.email.errors %}
+                        {% for error in form.name.errors %}
                         <li>{{ error }}</li>{% endfor %}
                     </ul>
                     {% endif %}
                 </fieldset>
-                <fieldset class="email col mb-3">
-                    {{ form.email.label(class="form-label") }}
-                    {{ form.email(placeholder='youremail@example.com', class="form-control") }}
-                    {% if form.email.errors %}
+                <fieldset class="code col mb-3">
+                    {{ form.code.label(class="form-label") }}
+                    {{ form.code(placeholder='Kode Prodi', class="form-control") }}
+                    {% if form.code.errors %}
                     <ul class="errors">
-                        {% for error in form.email.errors %}
-                        <li>{{ error }}</li>{% endfor %}
-                    </ul>
-                    {% endif %}
-                </fieldset>
-                <fieldset class="password col mb-3">
-                    {{ form.password.label(class="form-label") }}
-                    {{ form.password(class="form-control") }}
-                    {% if form.password.errors %}
-                    <ul class="errors">
-                        {% for error in form.password.errors %}
-                        <li>{{ error }}</li>{% endfor %}
-                    </ul>
-                    {% endif %}
-                </fieldset>
-                <fieldset class="confirm col mb-3">
-                    {{ form.confirm.label(class="form-label") }}
-                    {{ form.confirm(class="form-control") }}
-                    {% if form.confirm.errors %}
-                    <ul class="errors">
-                        {% for error in form.confirm.errors %}
+                        {% for error in form.namecode.errors %}
                         <li>{{ error }}</li>{% endfor %}
                     </ul>
                     {% endif %}

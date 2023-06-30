@@ -62,30 +62,6 @@ def dashboard():
         panel_card=panel_card,
     )
 
-# @main_bp.route("/prodi", methods=["GET"])
-# @login_required
-# def dashboard_prodi():
-#     """Dashboard for prodi"""
-#     return render_template(
-#         "dashboard_prodi.jinja2",
-#         title="Dashboard",
-#         template="dashboard-template",
-#         current_user=current_user,
-#         message="You are now logged in!",
-#     )
-
-# @main_bp.route("/alumni", methods=["GET"])
-# @login_required
-# def dashboard_alumni():
-#     """Dashboard for alumni"""
-#     return render_template(
-#         "dashboard_alumni.jinja2",
-#         title="Dashboard",
-#         template="dashboard-template",
-#         current_user=current_user,
-#         message="Yo are now logged in!",
-#     )
-
 @main_bp.route("/logout")
 @login_required
 def logout():
@@ -93,14 +69,13 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
-@main_bp.route("/basic_input", methods=["GET"])
+@main_bp.route("/basic_input/<string:nim>", methods=["GET"])
 @login_required
-def basic_input():
+def basic_input_mhs(nim=None):
     """Input Students Data"""
     form = MahasiswaForm()
-    nim = request.args.get('nim')
-    mahasiswa = [] if not nim else Mahasiswa.query.filter_by(nim=nim).first()
 
+    mahasiswa = [] if not nim else Mahasiswa.query.filter_by(nim=nim).first()
     
     if mahasiswa:
         sertifikat = Sertifikat.query.filter_by(mahasiswa_id=mahasiswa.id).all()
@@ -119,7 +94,6 @@ def basic_input():
     # development --> start
     detail_mahasiswa = [[]] if not nim else galih_helper.TestingApi.get_mhs_by_nim(nim)
     # development --> end
-    print("===========", detail_mahasiswa, "==============")
 
 
     # cuman buat pengingat
@@ -138,6 +112,33 @@ def basic_input():
         preview=None,
         data_pencapaian=data_pencapaian,
     )
+
+@main_bp.route("/basic_input/", methods=["GET"])
+@login_required
+def basic_input():
+    """Input Students Data"""
+    form = MahasiswaForm()
+    mahasiswa = [] 
+    data_pencapaian = []
+    detail_mahasiswa = [[]]
+
+    # cuman buat pengingat
+    list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
+    print(list_selection)
+    # hahaha
+
+    return render_template(
+        "data/basic_input.jinja2",
+        title="Basic Input",
+        template="dashboard-template",
+        current_user=current_user,
+        mahasiswa=mahasiswa,
+        detail_mahasiswa=detail_mahasiswa,
+        form=form,
+        preview=None,
+        data_pencapaian=data_pencapaian,
+    )
+
 
 @main_bp.route("/report", methods=["GET"])
 @login_required

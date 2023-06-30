@@ -12,6 +12,13 @@ class SignupForm(FlaskForm):
     """User Sign-up Form."""
 
     name = StringField("Nama Lengkap", validators=[DataRequired()])
+
+    list_selection = [(t.kode_prodi, str(t.nama_prodi) ) for t in Prodi.query.all()]
+    list_selection.insert(0, (None, '-- Pilih Program Studi --')) 
+    prodi = SelectField('prodi',  validators=[
+            DataRequired(),
+        ],choices=list_selection)
+    
     email = StringField(
         "Email",
         validators=[
@@ -28,7 +35,7 @@ class SignupForm(FlaskForm):
         ],
     )
     confirm = PasswordField(
-        "Confirm Your Password",
+        "Konfirmasi Password",
         validators=[
             DataRequired(),
             EqualTo("password", message="Passwords must match."),
@@ -66,6 +73,8 @@ class ReportSelectionForm(FlaskForm):
     list_selection.insert(0, (None, '-- Pilih Tahun Akademik --')) 
     batch_year = SelectField('batch_year', choices=list_selection)
 
-
-
+class ProdiForm(FlaskForm):
+    name = StringField("Nama Prodi", validators=[DataRequired()])
+    code = StringField("Kode Prodi", validators=[DataRequired()])
     
+    submit = SubmitField("Simpan")
