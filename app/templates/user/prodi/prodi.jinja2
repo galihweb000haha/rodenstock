@@ -114,6 +114,11 @@
         <script>
             $(document).ready(function() {
                 $('.my_selection').select2();
+                $('.select2-selection__arrow').removeClass('select2-selection__arrow')
+                $('.select2-selection').css('border', 0)
+                $('#search_menu').on('change', function() {
+                    document.location.href = $(this).val()
+                })
             });
         </script>
     {% endblock %}

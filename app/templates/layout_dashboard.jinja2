@@ -45,7 +45,9 @@
     <!-- Page CSS -->
     <!-- Page -->
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/pages/page-auth.css') }}" />
-    {% block pagestyles %}{% endblock %}
+    {% block pagestyles %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
+    {% endblock %}
     <!-- Helpers -->
     <script src="{{ url_for('static', filename='vendor/js/helpers.js') }}"></script>
 
@@ -149,12 +151,23 @@
                         <div class="navbar-nav align-items-center">
                             <div class="nav-item d-flex align-items-center">
                                 <i class="bx bx-search fs-4 lh-0"></i>
-                                <input
+                                {# <input
                                 type="text"
                                 class="form-control border-0 shadow-none"
                                 placeholder="Search..."
                                 aria-label="Search..."
-                                />
+                                /> #}
+                                <select class="form-control border-0 shadow-none my_selection" id="search_menu">
+                                    <option>Search...</option>
+                                    <option value="{{ url_for('main_bp.dashboard') }}">Dashboard</option>
+                                    <option value="{{ url_for('main_bp.data_master') }}">Data Management\Data Master</option>
+                                    <option value="{{ url_for('main_bp.basic_input') }}">Data Management\Input Data</option>
+                                    <option value="{{ url_for('prodi_bp.index') }}">Prodi</option>
+                                    <option value="{{ url_for('prodi_bp.prodi') }}">Prodi\Kelola Prodi</option>
+                                    <option value="{{ url_for('prodi_bp.admin_prodi') }}">Prodi\Kelola Admin Prodi</option>
+                                    <option value="{{ url_for('main_bp.report') }}">Report</option>
+                                    <option value="{{ url_for('main_bp.settings') }}">Settings</option>
+                                </select>
                             </div>
                         </div>
                         <!-- /Search -->
@@ -223,9 +236,7 @@
                         </ul>
                         
                     </div>
-                    <div style="display: block; height: 300px;">
-                        <h1>NANONANO</h1>
-                    </div>
+                   
                 </nav>
                 <!-- / Navbar -->
                 <!-- Content wrapper -->
@@ -281,10 +292,24 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
     <!-- Page JS -->
+    <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    {% block additionalscripts %}{% endblock %}
+    {% block additionalscripts %}
+        <script>
+            $(document).ready(function() {
+                $('.my_selection').select2();
+                $('.select2-selection__arrow').removeClass('select2-selection__arrow')
+                $('.select2-selection').css('border', 0)
+
+                $('#search_menu').on('change', function() {
+                    document.location.href = $(this).val()
+                })
+            });
+        </script>
+    {% endblock %}
     {% include 'analytics.jinja2' %}
   </body>
 </html>

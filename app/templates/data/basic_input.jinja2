@@ -248,6 +248,8 @@
     <script>
         $(document).ready(function() {
             $('.my_selection').select2();
+            $('.select2-selection__arrow').removeClass('select2-selection__arrow')
+            $('.select2-selection').css('border', 0)
         });
         $('#button-single-import').on('click', function (e) {
             e.preventDefault()

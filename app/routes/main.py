@@ -224,7 +224,7 @@ def download_excel():
 
     return send_file(file_stream, attachment_filename="tdd-excel.xlsx", as_attachment=True)
 
-@main_bp.route("/settings", methods=["GET"])
+@main_bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
     """ Settings """

@@ -64,6 +64,7 @@ class MahasiswaForm(FlaskForm):
     submit = SubmitField("Simpan")
 
 class ReportSelectionForm(FlaskForm):
+    """Selection Report Form"""
     list_selection = [(t.kode_prodi, str(t.nama_prodi) ) for t in Prodi.query.all()]
     list_selection.insert(0, (None, '-- Pilih Program Studi --')) 
     prodi = SelectField('prodi', choices=list_selection)
@@ -74,7 +75,11 @@ class ReportSelectionForm(FlaskForm):
     batch_year = SelectField('batch_year', choices=list_selection)
 
 class ProdiForm(FlaskForm):
+    """Prodi Modals Form"""
     name = StringField("Nama Prodi", validators=[DataRequired()])
     code = StringField("Kode Prodi", validators=[DataRequired()])
     
     submit = SubmitField("Simpan")
+
+
+    
