@@ -1,5 +1,5 @@
 """Logged-in page routes."""
-from flask import Blueprint, redirect, render_template, url_for, request, jsonify, send_file
+from flask import Blueprint, redirect, render_template, url_for, request, jsonify, send_file, flash
 from flask_login import current_user, login_required, logout_user
 from openpyxl import Workbook
 from io import BytesIO
@@ -20,6 +20,7 @@ from app.models import AdminProdi
 
 from app.forms import MahasiswaForm
 from app.forms import ReportSelectionForm
+from app.forms import SignupForm
 from app.helper import galih_helper
 
 # Blueprint Configuration
@@ -211,28 +212,42 @@ def rincian(nim):
 @main_bp.route("/excel/download")
 @login_required
 def download_excel():
-    wb = Workbook()
-    ws = wb.active
-    ws.append(['Nama', 'Semester', 'Prodi', 'Hasil Prediksi'])
-    ws.append(['Galih Fikran Syah', '8 (Delapan)', 'Teknik Informatika','Relevan'])
-    ws.append(['Gaston', '8 (Delapan)', 'Teknik Informatika','Relevan'])
-    ws.append(['Zainudin', '8 (Delapan)', 'Teknik Informatika','Relevan'])
-    ws.append(['Rohim', '8 (Delapan)', 'Teknik Informatika','Relevan'])
-    file_stream = BytesIO()
-    wb.save(file_stream)
-    file_stream.seek(0)
-
-    return send_file(file_stream, attachment_filename="tdd-excel.xlsx", as_attachment=True)
+    # Lokasi file yang ingin didownload
+    file_path = 'static/src/format.xlsx'
+    # Mengirim file sebagai respons
+    return send_file(file_path, as_attachment=True)
 
 @main_bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
     """ Settings """
+    form = SignupForm()
+    form.gender.default = '1' if current_user.gender else '0'
+    form.name.default = current_user.name
+    form.email.default = current_user.email
+    form.no_hp.default = current_user.no_hp
+    form.process()
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+        current_user.email = form.email.data
+        current_user.no_hp = form.no_hp.data
+        current_user.gender = form.gender.data
+        db.session.commit()
+        print("================================1",current_user.id,"========================")
+        
+        flash("Profil berhasil diperbarui")
+        return redirect(request.referrer)
+    else:
+        print("================================2",current_user.name,"========================")
+
+
+    
     return render_template(
         "settings.jinja2",
         title="Settings",
         template="dashboard-template",
         current_user=current_user,
+        form=form
     )
 
 @main_bp.route("/data_master", methods=["GET"])
@@ -299,6 +314,24 @@ def input_data():
     pekerjaan_ortu = request.form['pekerjaan_ortu']
     data_mhs = Mahasiswa.query.filter_by(nim=nim).first()
 
+    # reset achievement dulu supaya tidak redundant
+    all_sertifikat = Sertifikat.query.filter(Sertifikat.mahasiswa_id == data_mhs.id).all()
+    all_prestasi = Prestasi.query.filter(Prestasi.mahasiswa_id == data_mhs.id).all()
+    all_organisasi = Organisasi.query.filter(Organisasi.mahasiswa_id == data_mhs.id).all()
+
+    # loop for delete
+    if all_sertifikat:
+        for sert in all_sertifikat:
+            db.session.delete(sert)
+        db.session.commit()
+    if all_prestasi:
+        for pres in all_prestasi:
+            db.session.delete(pres)
+        db.session.commit()
+    if all_organisasi:
+        for org in all_organisasi:
+            db.session.delete(org)
+        db.session.commit()
 
     # Masukkin achievement ke database
     # 1. prestasi
@@ -373,6 +406,7 @@ def input_batch():
         ipk = row['ipk']
         penghasilan_ortu = row['penghasilan_ortu']
         pekerjaan_ortu = row['pekerjaan_ortu']
+        tahun_akademik = row['tahun_akademik']
 
         nama_prestasi = row['nama_prestasi'] if row['nama_prestasi'] == row['nama_prestasi']  else False 
         tingkat_prestasi = row['tingkat_prestasi'] if row['tingkat_prestasi'] == row['tingkat_prestasi'] else False
@@ -391,9 +425,10 @@ def input_batch():
                 if jk: current_mahasiswa.gender = jk
                 if penghasilan_ortu: current_mahasiswa.parents_income = penghasilan_ortu
                 if pekerjaan_ortu: current_mahasiswa.pekerjaan_ortu = pekerjaan_ortu
+                if tahun_akademik: current_mahasiswa.batch_year = tahun_akademik
                 db.session.commit()
             else :
-                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu)
+                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu, batch_year=tahun_akademik)
                 db.session.add(mhs)
                 db.session.commit()
 
@@ -440,8 +475,6 @@ def input_batch():
         
         if (index+1) not in removed_list:
             if start_nim is not None:
-
-                print(">>>>>>>>>>>>>>>>>>>>", start_nim)
                 res = galih_helper.PredictModel.predict(start_nim)
                 mhs = Mahasiswa.query.filter_by(nim=start_nim).first()
                 mhs.prestasi = galih_helper.Pembobotan.pembobotan_prestasi(prestasi_per_mahasiswa)
@@ -452,17 +485,28 @@ def input_batch():
                 mhs.predict_proba = res[1]
                 db.session.commit()
 
-
+                # insert organisasi
+                if organisasi_per_mahasiswa:
+                    for org in organisasi_per_mahasiswa:
+                        org_new = Organisasi(mahasiswa_id=mhs.id, nama_organisasi=org[0], peran_organisasi=org[1])
+                        db.session.add(org_new)
+                        db.session.commit()
+                # insert sertifikat
+                if sertifikat_per_mahasiswa:
+                    for sert in sertifikat_per_mahasiswa:
+                        sert_new = Sertifikat(mahasiswa_id=mhs.id, nama_sertifikat=sert[0], jenis_sertifikat=sert[1])
+                        db.session.add(sert_new)
+                        db.session.commit()
+                # insert prestasi
+                if prestasi_per_mahasiswa:
+                    for pres in prestasi_per_mahasiswa:
+                        pres_new = Prestasi(mahasiswa_id=mhs.id, nama_prestasi=pres[0], jenis_prestasi=pres[1])
+                        db.session.add(pres_new)
+                        db.session.commit()
         
         count_index = count_index + 1
         start_nim = None
-
-
-    # Parse the data as a Pandas DataFrame type
-    data = pandas.read_excel(file)
- 
-    # Return HTML snippet that will render the table
-    preview_excel = data.to_html()
+    
 
     form = MahasiswaForm()
     nim = request.args.get('nim')
@@ -481,7 +525,7 @@ def input_batch():
         mahasiswa=mahasiswa,
         detail_mahasiswa=detail_mahasiswa['data'][0],
         form=form,
-        preview=preview_excel,
+
     )
 
 @main_bp.app_errorhandler(404)

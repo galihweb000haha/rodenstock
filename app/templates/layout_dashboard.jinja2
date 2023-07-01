@@ -123,7 +123,7 @@
                 <li class="menu-item">
                     <a href="{{ url_for('main_bp.report') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-table"></i>
-                    <div data-i18n="Tables">Report</div>
+                    <div data-i18n="Tables">Laporan</div>
                     </a>
                 </li>
                 <li class="menu-item">
@@ -165,7 +165,7 @@
                                     <option value="{{ url_for('prodi_bp.index') }}">Prodi</option>
                                     <option value="{{ url_for('prodi_bp.prodi') }}">Prodi\Kelola Prodi</option>
                                     <option value="{{ url_for('prodi_bp.admin_prodi') }}">Prodi\Kelola Admin Prodi</option>
-                                    <option value="{{ url_for('main_bp.report') }}">Report</option>
+                                    <option value="{{ url_for('main_bp.report') }}">Laporan</option>
                                     <option value="{{ url_for('main_bp.settings') }}">Settings</option>
                                 </select>
                             </div>
@@ -177,8 +177,8 @@
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                                <div class="avatar avatar-online">
-                                    <img src="{{ url_for('static', filename='img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                                <div class="avatar">
+                                    <img src="{{ url_for('static', filename='img/avatars/userlogo.webp') }}" alt class="w-px-40 h-auto rounded-circle" />
                                 </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -186,13 +186,13 @@
                                     <a class="dropdown-item" href="#">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0 me-3">
-                                        <div class="avatar avatar-online">
-                                            <img src="{{ url_for('static', filename='img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                                        <div class="avatar">
+                                            <img src="{{ url_for('static', filename='img/avatars/userlogo.webp') }}" alt class="w-px-40 h-auto rounded-circle" />
                                         </div>
                                         </div>
                                         <div class="flex-grow-1">
-                                        <span class="fw-semibold d-block">John Doe</span>
-                                        <small class="text-muted">Admin</small>
+                                        <span class="fw-semibold d-block">{{current_user.name}}</span>
+                                        <small class="text-muted">{% if current_user.level == 1 %}Admin {% else %}Prodi {% endif %}</small>
                                         </div>
                                     </div>
                                     </a>
@@ -202,23 +202,14 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="#">
-                                    <i class="bx bx-user me-2"></i>
-                                    <span class="align-middle">My Profile</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
                                     <i class="bx bx-cog me-2"></i>
                                     <span class="align-middle">Settings</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="#">
-                                    <span class="d-flex align-items-center align-middle">
-                                        <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                                        <span class="flex-grow-1 align-middle">Billing</span>
-                                        <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                                    </span>
+                                    <i class="bx bx-help-circle me-2"></i>
+                                    <span class="align-middle">Bantuan</span>
                                     </a>
                                 </li>
                                 <li>
@@ -301,8 +292,8 @@
         <script>
             $(document).ready(function() {
                 $('.my_selection').select2();
-                $('.select2-selection__arrow').removeClass('select2-selection__arrow')
-                $('.select2-selection').css('border', 0)
+                $('#navbar-collapse .select2-selection__arrow').removeClass('select2-selection__arrow')
+                $('#navbar-collapse .select2-selection').css('border', 0)
 
                 $('#search_menu').on('change', function() {
                     document.location.href = $(this).val()

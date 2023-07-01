@@ -22,7 +22,7 @@
                 </ul>
             </div>
             <!-- Form controls -->
-            <form action="{{ url_for("main_bp.input_data") }}" method="post" id="form-single-import">
+            <form action="{{ url_for('main_bp.input_data') }}" method="post" id="form-single-import">
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center justify-content-between">
@@ -42,7 +42,8 @@
                                     {% endif %}
                                 </fieldset>
                             </div>
-                            
+
+                            {% if mahasiswa %}
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="mt-2 text-muted">INFORMASI PRIBADI MAHASISWA</h6>
@@ -72,40 +73,6 @@
                                         {% endif %}
                                         </ul>
                                     </div>
-                                    {# <div class="row">
-                                        <div class="col-md-6 mb-2">
-                                            <label for="nim">NIM</label>
-                                            <input name="nim2" id="nim2" class="form-control" readonly value="{{detail_mahasiswa.nim}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="nama_lengkap">Nama Lengkap</label>
-                                            <input name="nama_lengkap" id="nama_lengkap" class="form-control" readonly value="{{detail_mahasiswa.nama_lengkap}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="jk">Jenis Kelamin</label>
-                                            <input name="jk" id="jk" class="form-control" readonly value="{{detail_mahasiswa.jk}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="alamat">Alamat</label>
-                                            <input name="alamat" id="alamat" class="form-control" readonly value="{{detail_mahasiswa.jln}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="pekerjaan_ortu">Pekerjaan Ortu</label>
-                                            <input name="pekerjaan_ortu" id="pekerjaan_ortu" class="form-control" readonly value="{{detail_mahasiswa.pekerjaan_ayah}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="penghasilan_ortu">Penghasilan Ortu</label>
-                                            <input name="penghasilan_ortu" id="penghasilan_ortu" class="form-control" readonly value="{{detail_mahasiswa.penghasilan_ayah}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="status_mahasiswa">Status Mahasiswa</label>
-                                            <input name="state" id="status_mahasiswa" class="form-control" readonly value="{{detail_mahasiswa.status_mahasiswa}}">
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label for="batch_year">Tahun Masuk</label>
-                                            <input name="batch_year" id="batch_year" class="form-control" readonly value="{{detail_mahasiswa.tahun_masuk}}">
-                                        </div>
-                                    </div> #}
                                 </div>
 
                                 <div class="col-md-6" style="border-left:1px solid #ddd;">
@@ -137,6 +104,22 @@
                                             </div>
                                             {% endfor %}
 
+                                            {% if not data_pencapaian[0] %}
+                                                <div class="row input-prestasi">
+                                                <div class="col-md-6">
+                                                    <input placeholder="Nama prestasi" id="prestasi" name="nama_prestasi" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" name="prestasi">
+                                                        <option value="0">-- Pilih Jenis Prestasi --</option>
+                                                        <option value="3">Tingkat Internasional</option>
+                                                        <option value="2">Tingkat Nasional</option>
+                                                        <option value="1">Tingkat Regional</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
                                         </div>
                                         <div class="col-md-12 mb-2">
                                             <label for="organisasi" class="mb-3">Organisasi Mahasiswa</label>
@@ -157,6 +140,21 @@
                                                 </div>
                                             </div>
                                             {% endfor %}
+
+                                            {% if not data_pencapaian[1] %}
+                                            <div class="row input-organisasi">
+                                                <div class="col-md-6">
+                                                    <input placeholder="Nama Organisasi" id="organisasi" name="nama_organisasi" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" name="organisasi">
+                                                        <option value="0">-- Pilih Jenis  --</option>
+                                                        <option value="2">Pengurus</option>
+                                                        <option value="1">Anggota</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% endif %}
 
                                         </div>
                                         <div class="col-md-12 mb-2">
@@ -180,6 +178,22 @@
                                             </div>
                                             {% endfor %}
 
+                                            {% if not data_pencapaian[2] %}
+                                            <div class="row input-sertifikat">
+                                                <div class="col-md-6">
+                                                    <input placeholder="Nama Sertifikat" id="sertifikat" name="nama_sertifikat" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" name="sertifikat">
+                                                        <option value="0">-- Pilih Jenis Sertifikat --</option>
+                                                        <option value="3">Sertifikat Keahlian</option>
+                                                        <option value="2">Sertifikat Kursus</option>
+                                                        <option value="1">Sertifikat Seminar/Webinar</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
                                         </div>
                                     </div>
                                 </div>
@@ -189,6 +203,9 @@
                                     {{ form.submit(class='form-control btn btn-primary') }}
                                 </fieldset>
                             </div>
+                            {% endif %}
+                            
+
                         </div>
                     </div>
                 </div>
@@ -200,25 +217,16 @@
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h5 class="mb-0" class="card-header">Data Pencapaian Mahasiswa</h5>
                             <a href="/excel/download"s class="btn btn-sm btn-secondary float-end"><i class="bx bx-export"></i> Download Format</a>
-
                         </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-
                                     <div class="input-group">
                                         <input class="form-control" name="file" type="file" id="formFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
                                         <div class="input-group-append">
                                             {# <button class="btn btn-success" id="btn-preview" type="submit">Preview</button> #}
                                         </div>
                                     </div>
-
-                                </div>
-                                <div id="preview-excel" class="mt-3" style="overflow: auto; max-height: 350px;">
-                                    {% if preview %}
-                                        {{preview}}
-                                    {% endif %}
                                 </div>
                                 <div class="mt-3">
                                     <fieldset class="form-label float-end" style="width:100px;">
@@ -247,9 +255,18 @@
 
     <script>
         $(document).ready(function() {
+
+            $('#form-single-import').removeClass('d-none')
+            $('#form-import-batch').addClass('d-none')
+
+
             $('.my_selection').select2();
-            $('.select2-selection__arrow').removeClass('select2-selection__arrow')
-            $('.select2-selection').css('border', 0)
+            $('#navbar-collapse .select2-selection__arrow').removeClass('select2-selection__arrow')
+            $('#navbar-collapse .select2-selection').css('border', 0)
+
+            $('#search_menu').on('change', function() {
+                document.location.href = $(this).val()
+            })
         });
         $('#button-single-import').on('click', function (e) {
             e.preventDefault()
@@ -267,7 +284,7 @@
         })
         $('.nim').change(function() {
 
-            document.location.href = '/basic_input?nim=' + $('#select2-nim-container').text().split('-')[0]
+            document.location.href = '/basic_input/' + $('#select2-nim-container').text().split('-')[0]
 
             // $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
             //     $.each( data['data'], function( key, value ) {
@@ -320,7 +337,7 @@
             el =
             `<div class="row mb-2 input-organisasi">
                 <div class="col-md-6">
-                    <input placeholder="Nama Organisasi" id="organisasi" name="nama_organisasi" class="form-control" value="{{mahasiswa.organisasi}}">
+                    <input placeholder="Nama Organisasi" id="organisasi" name="nama_organisasi" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <select class="form-control" name="organisasi">
@@ -343,7 +360,7 @@
             el =
             `<div class="row mb-2 input-sertifikat">
                 <div class="col-md-6">
-                    <input placeholder="Nama Sertifikat" id="sertifikat" name="nama_prestasi" class="form-control" value="{{mahasiswa.sertifikat}}">
+                    <input placeholder="Nama Sertifikat" id="sertifikat" name="nama_prestasi" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <select class="form-control" name="sertifikat">
@@ -362,21 +379,6 @@
             }  
         })
 
-        //$('#form-import-batch').on('submit', function(e) {
-        //    e.preventDefault()
-        //    console.log(new FormData(this))
-        //  $.ajax({
-        //      type: "POST",
-        //      url: "/input_batch", 
-        //      processData: false,
-        //      contentType: false,
-        //      dataType : 'json',          
-        //      data: new FormData(this),
-        //      success: function (result) {
-        //          alert(result);
-        //      }
-        //  });
-        //})
         
     </script>
 

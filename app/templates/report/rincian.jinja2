@@ -1,6 +1,6 @@
 {%extends "layout_dashboard.jinja2" %}
 {%block pagestyles %}
-
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
 {% endblock %}
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -191,4 +191,18 @@
 
 </div>
 
+{% block additionalscripts %}
+    <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.my_selection').select2();
+            $('#navbar-collapse .select2-selection__arrow').removeClass('select2-selection__arrow')
+            $('#navbar-collapse .select2-selection').css('border', 0)
+            $('#search_menu').on('change', function() {
+                document.location.href = $(this).val()
+            })
+        });
+    </script>
+{% endblock %}
 {% endblock %}

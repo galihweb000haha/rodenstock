@@ -21,39 +21,60 @@
             <div class="card" id="card-akun">
                 <h5 class="card-header">Pengaturan Akun</h5>
                 <div class="card-body">
-                    <form>
+                    <form action="{{ url_for('main_bp.settings') }}" method="post" id="form-single-import">
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="nama_lengkap">Nama Lengkap</label>
-                                <input class="form-control" name="nama_lengkap" id="nama_lengkap" value="{{current_user['name']}}"/>
+                                <fieldset class="name col mb-3">
+                                    {{ form.name.label(class="form-label") }}
+                                    {{ form.name(placeholder='Nama Lengkap', class="form-control") }}
+                                    {% if form.name.errors %}
+                                    <ul class="errors">
+                                        {% for error in form.name.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="jk">Jenis Kelamin</label>
-                                <select class="form-select form-control" name="jk" id="jk">
-                                    <option>Pilih Jenis Kelamin</option>
-                                    <option {% if current_user.gender %}selected{% endif %}>Laki-laki</option>
-                                    <option{% if not current_user.gender %}selected{% endif %}>Perempuan</option>
-                                </select>
+                                <fieldset class="gender form-label">
+                                    <label for="gender" class="form-label">{{ form.gender.label }}</label>
+                                    {{ form.gender(class='form-control') }}
+                                    {% if form.gender.errors %}
+                                    <ul class="errors">
+                                        {% for error in form.gender.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="email">Email</label>
-                                <input class="form-control" name="email" id="email" value="{{current_user['email']}}"/>
+                                <fieldset class="email col mb-3">
+                                    {{ form.email.label(class="form-label") }}
+                                    {{ form.email(placeholder='Email', class="form-control") }}
+                                    {% if form.email.errors %}
+                                    <ul class="errors">
+                                        {% for error in form.email.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="no_hp">No HP</label>
-                                <input class="form-control" name="no_hp" id="no_hp" value="{{current_user['no_hp']}}"/>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label>Pilih Foto</label>
-                                    <input class="form-control" type="file" id="formFile">
-                                    <div id="defaultFormControlHelp" class="form-text">
-                                        Ukuran file < 5MB
-                                    </div>
-                                </div>
+                                <fieldset class="no_hp col mb-3">
+                                    {{ form.no_hp.label(class="form-label") }}
+                                    {{ form.no_hp(placeholder='no_hp', class="form-control") }}
+                                    {% if form.no_hp.errors %}
+                                    <ul class="errors">
+                                        {% for error in form.no_hp.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                         </div>
-                        <button class="btn btn-primary">Simpan</button>
+                        <div class="submit-button">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
                     </form>
                 </div>
             </div>

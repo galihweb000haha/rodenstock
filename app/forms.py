@@ -2,6 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+from flask_login import current_user
 
 from .models import Mahasiswa, Prodi
 
@@ -27,6 +28,15 @@ class SignupForm(FlaskForm):
             DataRequired(),
         ],
     )
+
+    no_hp = StringField(
+        "No HP",
+        validators=[
+            Length(max=15),
+            DataRequired(),
+        ],
+    )
+
     password = PasswordField(
         "Password",
         validators=[
@@ -41,6 +51,11 @@ class SignupForm(FlaskForm):
             EqualTo("password", message="Passwords must match."),
         ],
     )
+
+    list_selection = [('0', 'Perempuan'), ('1', 'Laki-laki')]
+    list_selection.insert(0, (None, '-- Pilih Jenis Kelamin --')) 
+    gender = SelectField('Jenis Kelamin', choices=list_selection)
+
     website = StringField("Website", validators=[Optional()])
     submit = SubmitField("Simpan")
 
