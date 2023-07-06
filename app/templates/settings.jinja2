@@ -1,6 +1,12 @@
 {% extends "layout_dashboard.jinja2" %}
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
     <h4 class="fw-bold py-3 mb-4">
         <span class="text-muted fw-light">Settings /</span> Notifications
     </h4>
@@ -21,7 +27,8 @@
             <div class="card" id="card-akun">
                 <h5 class="card-header">Pengaturan Akun</h5>
                 <div class="card-body">
-                    <form action="{{ url_for('main_bp.settings') }}" method="post" id="form-single-import">
+                    <form action="{{ url_for('main_bp.settings') }}" method="post" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <fieldset class="name col mb-3">
@@ -83,22 +90,44 @@
             <div class="card d-none" id="card-reset">
                 <h5 class="card-header">Ganti Password</h5>
                 <div class="card-body">
-                    <form>
+                    <form action="{{ url_for('main_bp.reset') }}" method="post" enctype="multipart/form-data">
+                        {{ form_reset.hidden_tag() }}
                         <div class="row">
                             <div class="col-md-12 mb-2">
-                                <label for="password_lama">Masukkan Password Saat Ini</label>
-                                <input class="form-control" name="password_lama" id="password_lama"/>
+                                 <fieldset class="name col mb-3">
+                                    {{ form_reset.old_password.label(class="form-label") }}
+                                    {{ form_reset.old_password(placeholder='Password saat ini', class="form-control") }}
+                                    {% if form_reset.old_password.errors %}
+                                    <ul class="errors">
+                                        {% for error in form_reset.old_password.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="password_baru">Masukkan Password Baru</label>
-                                <input class="form-control" name="password_baru" id="password_baru"/>
-                                <div id="defaultFormControlHelp" class="form-text">
-                                    Minimal 8 karakter
-                                </div>
+                                 <fieldset class="name col mb-3">
+                                    {{ form_reset.new_password.label(class="form-label") }}
+                                    {{ form_reset.new_password(placeholder='Password baru', class="form-control") }}
+                                    {% if form_reset.new_password.errors %}
+                                    <ul class="errors">
+                                        {% for error in form_reset.new_password.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="konfirmasi_password">Konfirmasi Password</label>
-                                <input class="form-control" name="konfirmasi_password" id="konfirmasi_password"/>
+                                 <fieldset class="name col mb-3">
+                                    {{ form_reset.confirm.label(class="form-label") }}
+                                    {{ form_reset.confirm(placeholder='Konfirmasi password', class="form-control") }}
+                                    {% if form_reset.confirm.errors %}
+                                    <ul class="errors">
+                                        {% for error in form_reset.confirm.errors %}
+                                        <li>{{ error }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </fieldset>
                             </div>
                         </div>
                         <button class="btn btn-primary">Simpan</button>

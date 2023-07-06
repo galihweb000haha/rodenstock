@@ -46,7 +46,18 @@ class User(UserMixin, db.Model):
             'level': self.level,
         }
 
-
+class Prodi(db.Model):
+    __tablename__ = "prodi"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nama_prodi = db.Column(db.String(50))
+    kode_prodi = db.Column(db.String(5), index=True)
+    
+    def __repr__(self):
+        return "<Prodi(nama_prodi='%s', kode_prodi='%s')>" % (
+            self.nama_prodi,
+            self.kode_prodi,
+        )
+    
 class Mahasiswa(db.Model):
     __tablename__ = "mahasiswa"
     # main information
@@ -56,6 +67,8 @@ class Mahasiswa(db.Model):
     state = db.Column(db.String(20), nullable=True)
     gender = db.Column(db.Boolean, unique=False, nullable=True)
     batch_year = db.Column(db.String(4), nullable=True)
+    prodi = db.Column(db.String(2), db.ForeignKey(Prodi.kode_prodi), primary_key=True)
+
     # secondary information
     gpa_score = db.Column(db.Float, nullable=True)
     toefl_score = db.Column(db.Float, nullable=True)
@@ -90,18 +103,6 @@ class Mahasiswa(db.Model):
             'gpa_score': self.gpa_score,
             'parents_income': self.parents_income
         }
-    
-class Prodi(db.Model):
-    __tablename__ = "prodi"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nama_prodi = db.Column(db.String(50))
-    kode_prodi = db.Column(db.String(5), index=True)
-    
-    def __repr__(self):
-        return "<Prodi(nama_prodi='%s', kode_prodi='%s')>" % (
-            self.nama_prodi,
-            self.kode_prodi,
-        )
     
 class AdminProdi(db.Model):
     __tablename__ = "admin_prodi"

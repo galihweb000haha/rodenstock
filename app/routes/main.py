@@ -7,7 +7,7 @@ from io import BytesIO
 import sys, requests, pandas, math
  
 # setting path
-sys.path.insert(1, '/home/galih/flasklogin-tutorial/app')
+# sys.path.insert(1, '/home/galih/flasklogin-tutorial/app')
 
 
 from app import db
@@ -20,7 +20,9 @@ from app.models import AdminProdi
 
 from app.forms import MahasiswaForm
 from app.forms import ReportSelectionForm
-from app.forms import SignupForm
+from app.forms import SettingsForm
+from app.forms import ResetForm
+
 from app.helper import galih_helper
 
 # Blueprint Configuration
@@ -123,6 +125,10 @@ def basic_input():
     data_pencapaian = []
     detail_mahasiswa = [[]]
 
+    admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
+    selection_by_user = Mahasiswa.query.filter_by(prodi=admin.kode_prodi).all()
+    form.nim.choices = [(t.id, str(t.nim) + '-' + t.name ) for t in selection_by_user]
+
     # cuman buat pengingat
     list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
     print(list_selection)
@@ -138,6 +144,35 @@ def basic_input():
         form=form,
         preview=None,
         data_pencapaian=data_pencapaian,
+    )
+
+
+@main_bp.route("/report/<string:prodi>/<string:thak>", methods=["GET"])
+@login_required
+def report_filter_prodi(prodi, thak):
+    form = ReportSelectionForm()
+    
+    if prodi and thak == 'n':
+        nims = Mahasiswa.query.filter_by(prodi=prodi).with_entities(Mahasiswa.nim).all()
+        form.prodi.default = prodi
+    elif thak and prodi == 'n':
+        nims = Mahasiswa.query.filter_by(batch_year=thak).with_entities(Mahasiswa.nim).all()
+        form.batch_year.default = thak
+    else:
+        form.batch_year.default = thak
+        form.prodi.default = prodi
+        nims = Mahasiswa.query.filter_by(prodi=prodi, batch_year=thak).with_entities(Mahasiswa.nim).all()
+    
+    form.process()
+    data = galih_helper.PredictModel.predict_multiple(nims)
+
+    return render_template(
+        "report/report.jinja2",
+        title="Report",
+        template="dashboard-template",
+        datas=data,
+        current_user=current_user,
+        form=form,
     )
 
 
@@ -166,13 +201,11 @@ def report():
     #     },
     # ]
     # INI NGAMBIL DARI DATABASE SAJA YAK!!!!!!
-    batch_year = db.session.query(Mahasiswa.batch_year).group_by(Mahasiswa.batch_year).all()
 
     form = ReportSelectionForm()
     nims = Mahasiswa.query.with_entities(Mahasiswa.nim).all()
     data = galih_helper.PredictModel.predict_multiple(nims)
     
-
     return render_template(
         "report/report.jinja2",
         title="Report",
@@ -221,34 +254,64 @@ def download_excel():
 @login_required
 def settings():
     """ Settings """
-    form = SignupForm()
+    form = SettingsForm()
+    form_reset = ResetForm()
+
     form.gender.default = '1' if current_user.gender else '0'
     form.name.default = current_user.name
     form.email.default = current_user.email
     form.no_hp.default = current_user.no_hp
-    form.process()
+
+
     if form.validate_on_submit():
-        current_user.name = form.name.data
-        current_user.email = form.email.data
-        current_user.no_hp = form.no_hp.data
-        current_user.gender = form.gender.data
+        name = form.name.data
+        email = form.email.data
+        no_hp = form.no_hp.data
+        gender = form.gender.data
+
+        form.process()
+
+        current_user.name = name
+        current_user.email = email
+        current_user.no_hp = no_hp
+        current_user.gender = True if gender == '1' else False
+        
         db.session.commit()
-        print("================================1",current_user.id,"========================")
         
         flash("Profil berhasil diperbarui")
         return redirect(request.referrer)
-    else:
-        print("================================2",current_user.name,"========================")
 
+    form.process()
 
-    
     return render_template(
         "settings.jinja2",
         title="Settings",
         template="dashboard-template",
         current_user=current_user,
-        form=form
+        form=form,
+        form_reset=form_reset,
     )
+    
+    
+@main_bp.route("/reset", methods=["POST"])
+@login_required
+def reset():
+    form = ResetForm()
+
+    old_password = form.old_password.data
+    new_password = form.new_password.data
+    
+    form.process()
+
+    print("====", current_user, old_password, "====")
+    if current_user.check_password(password=old_password):
+        current_user.set_password(new_password)
+        db.session.commit()
+        flash("Passwrod berhasil diperbarui!")
+        return redirect(request.referrer)
+    flash("Passwrod gagal diperbarui!")
+    return redirect(request.referrer)
+
 
 @main_bp.route("/data_master", methods=["GET"])
 @login_required

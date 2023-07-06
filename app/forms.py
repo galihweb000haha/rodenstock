@@ -8,6 +8,28 @@ from .models import Mahasiswa, Prodi
 
 from . import db
 
+class SettingsForm(FlaskForm):
+    name = StringField("Nama Lengkap", validators=[DataRequired()])
+    email = StringField(
+        "Email",
+        validators=[
+            Length(min=6),
+            Email(message="Enter a valid email."),
+            DataRequired(),
+        ],
+    )
+    no_hp = StringField(
+        "No HP",
+        validators=[
+            Length(max=15),
+            DataRequired(),
+        ],
+    )
+    list_selection = [('0', 'Perempuan'), ('1', 'Laki-laki')]
+    list_selection.insert(0, (None, '-- Pilih Jenis Kelamin --')) 
+    gender = SelectField('Jenis Kelamin', choices=list_selection)
+    submit = SubmitField("Simpan")
+
 
 class SignupForm(FlaskForm):
     """User Sign-up Form."""
@@ -33,7 +55,7 @@ class SignupForm(FlaskForm):
         "No HP",
         validators=[
             Length(max=15),
-            DataRequired(),
+            Optional(),
         ],
     )
 
@@ -54,7 +76,7 @@ class SignupForm(FlaskForm):
 
     list_selection = [('0', 'Perempuan'), ('1', 'Laki-laki')]
     list_selection.insert(0, (None, '-- Pilih Jenis Kelamin --')) 
-    gender = SelectField('Jenis Kelamin', choices=list_selection)
+    gender = SelectField('Jenis Kelamin', validators=[Optional()], choices=list_selection)
 
     website = StringField("Website", validators=[Optional()])
     submit = SubmitField("Simpan")
@@ -94,6 +116,24 @@ class ProdiForm(FlaskForm):
     name = StringField("Nama Prodi", validators=[DataRequired()])
     code = StringField("Kode Prodi", validators=[DataRequired()])
     
+    submit = SubmitField("Simpan")
+
+class ResetForm(FlaskForm):
+    old_password = PasswordField("Password saat ini", validators=[DataRequired()])
+    new_password = PasswordField(
+        "Password",
+        validators=[
+            DataRequired(),
+            Length(min=8, message="Masukkan password yang kuat!"),
+        ],
+    )
+    confirm = PasswordField(
+        "Konfirmasi Password",
+        validators=[
+            DataRequired(),
+            EqualTo("new_password", message="Password harus match"),
+        ],
+    )
     submit = SubmitField("Simpan")
 
 

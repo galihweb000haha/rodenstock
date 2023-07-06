@@ -1,5 +1,5 @@
 # from flask import Blueprint, redirect, render_template, url_for, request
-# from flask_login import current_user, login_required, logout_user
+from flask_login import current_user
 
 from flask import request, jsonify
 import requests
@@ -7,6 +7,7 @@ from app.models import Mahasiswa
 import pandas as pd
 
 from jcopml.utils import load_model
+
 
 class Api():
     def get_mhs(nim):
@@ -149,3 +150,6 @@ class Utility():
             nominal_str = "Rp" + nominal_str
 
         return nominal_str
+
+
+    

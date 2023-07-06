@@ -86,6 +86,24 @@
             $('#search_menu').on('change', function() {
                 document.location.href = $(this).val()
             })
+
+
+            $('.prodi .my_selection').on('change', function() {
+                if ($('.batch_year .my_selection').val() != 'None') {
+                    document.location.href = '/report/' + $(this).val() + '/' + $('.batch_year .my_selection').val()
+                } else {
+                    document.location.href = '/report/' + $(this).val() + '/n'
+                }
+            })
+            $('.batch_year .my_selection').on('change', function() {
+                if ($('.prodi .my_selection').val() != 'None') {
+                    document.location.href = '/report/' + $('.prodi .my_selection').val() + '/' + $(this).val()
+                } else {
+                    document.location.href = '/report/n' + '/' + $(this).val()
+                }
+            })
+
+            
         });
     </script>
 {% endblock %}
