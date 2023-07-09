@@ -46,6 +46,10 @@ def index():
     """ Prodi Page """
     data_prodi = Prodi.query.all()
     data_admin_prodi = AdminProdi.query.join(User, AdminProdi.user_id==User.id).join(Prodi, AdminProdi.kode_prodi==Prodi.kode_prodi).all()
+    counter = ({
+        'ammount_prodi': len(data_prodi),
+        'ammount_admin_prodi': len(data_admin_prodi),
+    })
     
     return render_template(
         "user/prodi/index.jinja2",
@@ -55,6 +59,7 @@ def index():
         message="You are now logged in!",
         data_prodi=data_prodi,
         data_admin_prodi=data_admin_prodi,
+        counter=counter,
     )
 
 @prodi_bp.route("/prodi/kelola_prodi", methods=["GET", "POST"])

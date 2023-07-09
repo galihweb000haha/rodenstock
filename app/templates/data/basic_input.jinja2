@@ -6,7 +6,7 @@
 
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Data management /</span> Input data</h4>
         <div class="row">
             <div class="col-md-12">
                 <ul class="nav nav-pills flex-column flex-md-row mb-3">
@@ -43,34 +43,26 @@
                                 </fieldset>
                             </div>
 
-                            {% if mahasiswa %}
+                            {% if api_mahasiswa %}
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="mt-2 text-muted">INFORMASI PRIBADI MAHASISWA</h6>
                                     <div class="card mb-4">
                                         <ul class="list-group list-group-flush">
-                                        {% if not detail_mahasiswa %}
-                                            <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div> Malik Ibrahim Saleh</li>
-                                            <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>19090099</li>
-                                            <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div> Teknik Informatika</li>
-                                            <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div> 8 (Delapan)</li>
-                                        {% else %}
                                             <li class="list-group-item"><div width="130px"><strong>Nama:</strong></div>
-                                                <input name="nama" type="hidden" value="{{detail_mahasiswa['nama']}}" />
-                                                {{detail_mahasiswa['nama']}}
+                                                <input name="nama" type="hidden" value="{{api_mahasiswa['nama_lengkap']}}" />
+                                                {{api_mahasiswa['nama_lengkap']}}
                                             </li>
                                             <li class="list-group-item"><div width="130px"><strong>NIM:</strong></div>
-                                                <input name="nim2" type="hidden" value="{{detail_mahasiswa['nim']}}" />
-                                                {{detail_mahasiswa['nim']}}
+                                                <input name="nim2" type="hidden" value="{{api_mahasiswa['nim']}}" />
+                                                {{api_mahasiswa['nim']}}
                                             </li>
-                                            <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div>{{detail_mahasiswa['prodi']}}</li>
-                                            <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div>{{detail_mahasiswa['semester']}}</li>
+                                            <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div>{{api_mahasiswa['nama_prodi']}}</li>
+                                            <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div>{{api_mahasiswa['semester']}}</li>
 
-                                                <input name="parents_income" type="hidden" value="{{detail_mahasiswa['penghasilan_ortu']}}" />
-                                                <input name="pekerjaan_ortu" type="hidden" value="{{detail_mahasiswa['pekerjaan_ortu']}}" />
-                                                <input name="jk" type="hidden" value="{{detail_mahasiswa['jk']}}" />
-                                            
-                                        {% endif %}
+                                            <input name="parents_income" type="hidden" value="{{api_mahasiswa['penghasilan_ayah']}}" />
+                                            <input name="pekerjaan_ortu" type="hidden" value="{{api_mahasiswa['pekerjaan_ayah']}}" />
+                                            <input name="jk" type="hidden" value="{{api_mahasiswa['jk']}}" />
                                         </ul>
                                     </div>
                                 </div>
@@ -81,7 +73,7 @@
                                     <div class="row">
                                         <div class="col-md-12 mb-2">
                                             <label for="ipk">Nilai IPK</label>
-                                            <input name="ipk" id="ipk" class="form-control" readonly value="{{detail_mahasiswa.ipk}}">
+                                            <input name="ipk" id="ipk" class="form-control" readonly value="">
                                         </div>
                                         <div class="col-md-12 mb-2">
                                             <label for="prestasi" class="mb-3">Prestasi/Penghargaan</label>

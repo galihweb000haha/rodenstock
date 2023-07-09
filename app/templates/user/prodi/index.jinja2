@@ -20,7 +20,7 @@
                     <p class="card-text">Tambah, hapus atau edit data program studi.</p>
                     <a href="{{ url_for('prodi_bp.prodi') }}" class="btn btn-primary">Kelola Prodi</a>
                 </div>
-                <div class="card-footer text-muted">2 data prodi tersedia</div>
+                <div class="card-footer text-muted">{{counter.ammount_prodi}} data prodi tersedia</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -31,7 +31,7 @@
                     <p class="card-text">Tambah, hapus atau edit data admin program studi.</p>
                     <a href="{{ url_for('prodi_bp.admin_prodi') }}" class="btn btn-primary">Kelola Admin Prodi</a>
                 </div>
-                <div class="card-footer text-muted">2 data admin prodi tersedia</div>
+                <div class="card-footer text-muted">{{counter.ammount_admin_prodi}} data admin prodi tersedia</div>
             </div>
         </div>
     </div>

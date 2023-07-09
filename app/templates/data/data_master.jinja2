@@ -6,35 +6,32 @@
 {% block content %}
 <!-- Basic Bootstrap Table -->
 <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Data management /</span> Data master</h4>
     <div class="card">
     <h5 class="card-header">Data Mahasiswa</h5>
-
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="tahun_angkatan" class="form-label">Pilih Tahun Angkatan</label>
-                    <select class="form-select my_selection" id="tahun_angkatan" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="2019">2019</option>
-                        <option value="2018">2018</option>
-                        <option value="2017">2017</option>
-                        <option value="2016">2016</option>
-                        <option value="2015">2015</option>
-                        <option value="2014">2014</option>
-                    </select>
-                </div>
+                <fieldset class="prodi form-label">
+                    {{ form.prodi(class='form-control my_selection') }}
+                    {% if form.prodi.errors %}
+                    <ul class="errors">
+                        {% for error in form.prodi.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
             </div>
             <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="Prodi" class="form-label">Pilih Prodi</label>
-                    <select class="form-select my_selection" id="prodi" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        {% for pr in prodi %}
-                            <option value="{{pr.kd_prodi}}">{{pr.nama}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                <fieldset class="batch_year form-label">
+                    {{ form.batch_year(class='form-control my_selection') }}
+                    {% if form.batch_year.errors %}
+                    <ul class="errors">
+                        {% for error in form.batch_year.errors %}
+                        <li>{{ error }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </fieldset>
             </div>
         </div>
     </div>
@@ -46,31 +43,25 @@
             <th>No</th>
             <th>NIM</th>
             <th>Nama</th>
-            <th>Status</th>
+            <th>Jenis Kel.</th>
+            <th>Semester</th>
+            <th>Keterangan</th>
             <th></th>
             </tr>
         </thead>
         <tbody class="table-border-bottom-0 table-content">
             {% for mhs in mahasiswa %}
                 <tr>
-                    <td>{{mhs.id}}</td>
-                    <td>{{mhs.nama}}</td>
-                    <td>{{mhs.nim}}</td>
-                    <td>{{mhs.status}}</td>
+                    <td>{{loop.index}}</td>
+                    <td>{{mhs['nim']}}</td>
+                    <td>{{mhs['nama_lengkap']}}</td>
+                    <td>{% if mhs['jk'] == 'L' %} Laki-laki {% else %} Perempuan {% endif %}</td>
+                    <td>{{mhs['semester']}}</td>
+                    <td>{{mhs['keterangan']}}</td>
                     <td>
-                        <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/basic_input?nim={{mhs.nim}}"
-                                ><i class="bx bx-edit-alt me-1"></i> Lengkapi Data</a
-                                >
-                                <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-trash me-1"></i> Reset Data</a
-                                >
-                            </div>
-                        </div>
+                        <a type="button" class="btn btn-light text-dark" href="/basic_input/{{mhs['nim']}}">
+                            <i class="bx bx-edit-alt me-1"></i> Lengkapi Data
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
@@ -96,45 +87,27 @@
             $('#search_menu').on('change', function() {
                 document.location.href = $(this).val()
             })
-            //let datatable = $('.table-data-master').DataTable(
-            //    {"paging": true}
-            //);
-        });
-        $('#prodi').change(function() {
-            $.get("/get_mhs_by_tahun_prodi?tahun="+$('#tahun_angkatan').val()+"&prodi="+$('#prodi').val(), function(data) {
-                let html = ``;
-                let i = 1;
-                
-                $.each( data['data'], function( key, value ) {
-                    html += `<tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> ${i}</td>
-                                <td>${value.nim}</td>
-                                <td>${value.nama_lengkap}</td>
-                                <td><span class="badge bg-label-${value.status_mahasiswa == 'A' ? 'primary' : 'secondary'} me-1">${value.status_mahasiswa == 'A' ? 'Aktif' : 'Tidak aktif'}</span></td>
-                                <td>
-                                    <div class="dropdown">
-                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                        <i class="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="/basic_input?nim=${value.nim}"
-                                        ><i class="bx bx-edit-alt me-1"></i> Lengkapi Data</a
-                                        >
-                                        <a class="dropdown-item" href="javascript:void(0);"
-                                        ><i class="bx bx-trash me-1"></i> Reset Data</a
-                                        >
-                                    </div>
-                                    </div>
-                                </td>
-                            </tr>`
-                    i++;
-                });
-                $('.table-data-master').DataTable().destroy()
-                $('.table-content').html(html)
-                $('.table-data-master').DataTable()
+            let datatable = $('.table-data-master').DataTable(
+                {"paging": true}
+            );
 
-            });
-        })
+            $('.prodi .my_selection').on('change', function() {
+                if ($('.batch_year .my_selection').val() != 'None') {
+                    document.location.href = '/data_master/' + $(this).val() + '/' + $('.batch_year .my_selection').val()
+                } else {
+                    document.location.href = '/data_master/' + $(this).val() + '/n'
+                }
+            })
+            $('.batch_year .my_selection').on('change', function() {
+                if ($('.prodi .my_selection').val() != 'None') {
+                    document.location.href = '/data_master/' + $('.prodi .my_selection').val() + '/' + $(this).val()
+                } else {
+                    document.location.href = '/data_master/n' + '/' + $(this).val()
+                }
+            })
+
+        });
+        
     </script>
 
 {% endblock %}

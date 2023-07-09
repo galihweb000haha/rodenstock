@@ -1,8 +1,9 @@
 """Logged-in page routes."""
 from flask import Blueprint, redirect, render_template, url_for, request, jsonify, send_file, flash
 from flask_login import current_user, login_required, logout_user
-from openpyxl import Workbook
-from io import BytesIO
+# from openpyxl import Workbook
+# from io import BytesIO
+from datetime import datetime
 
 import sys, requests, pandas, math
  
@@ -38,9 +39,13 @@ def dashboard():
     # panel card information
     ammount_admin = AdminProdi.query.count()
     datas = Mahasiswa.query.all()
+    api_mahasiswa = galih_helper.Api.getMhsFilterBySmt()
+
     panel_card = ({
         'admin_prodi_ammount': ammount_admin,
-        'mahasiswa_ammount': len(datas)
+        'ammount_filled': len(datas),
+        'mahasiswa_ammount': len(api_mahasiswa['data']),
+        'ammount_nofilled': len(api_mahasiswa['data']) - len(datas),
     })
     
     relevan_count = 0
@@ -74,10 +79,23 @@ def logout():
 
 @main_bp.route("/basic_input/<string:nim>", methods=["GET"])
 @login_required
-def basic_input_mhs(nim=None):
+def basic_input_mhs(nim):
     """Input Students Data"""
     form = MahasiswaForm()
 
+    if current_user.level == 1:
+        selection_by_user = galih_helper.Api.getMhsFilterBySmt()
+    else:
+        admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
+        selection_by_user = galih_helper.Api.getMhsFilterByProdiandSmt(admin.kode_prodi)
+        
+    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] ) for t in selection_by_user['data']]
+    list_selection.insert(0, (None, '-- Pilih Mahasiswa --')) 
+    form.nim.choices = list_selection
+    form.nim.default = nim
+    form.process()
+
+    api_mahasiswa = galih_helper.Api.getMhsByNim(nim)
     mahasiswa = [] if not nim else Mahasiswa.query.filter_by(nim=nim).first()
     
     if mahasiswa:
@@ -89,31 +107,15 @@ def basic_input_mhs(nim=None):
     else:
         data_pencapaian = []
 
-    # production --> start
-    # detail_mahasiswa = {'data': [[]]} if not nim else galih_helper.Api.get_mhs(nim)
-    # detail_mahasiswa = detail_mahasiswa['data'][0]
-    # production --> end
-
-    # development --> start
-    detail_mahasiswa = [[]] if not nim else galih_helper.TestingApi.get_mhs_by_nim(nim)
-    # development --> end
-
-
-    # cuman buat pengingat
-    list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
-    print(list_selection)
-    # hahaha
 
     return render_template(
         "data/basic_input.jinja2",
         title="Basic Input",
         template="dashboard-template",
         current_user=current_user,
-        mahasiswa=mahasiswa,
-        detail_mahasiswa=detail_mahasiswa,
-        form=form,
-        preview=None,
+        api_mahasiswa=api_mahasiswa['data'][0],
         data_pencapaian=data_pencapaian,
+        form=form,
     )
 
 @main_bp.route("/basic_input/", methods=["GET"])
@@ -125,14 +127,15 @@ def basic_input():
     data_pencapaian = []
     detail_mahasiswa = [[]]
 
-    admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
-    selection_by_user = Mahasiswa.query.filter_by(prodi=admin.kode_prodi).all()
-    form.nim.choices = [(t.id, str(t.nim) + '-' + t.name ) for t in selection_by_user]
-
-    # cuman buat pengingat
-    list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
-    print(list_selection)
-    # hahaha
+    if current_user.level == 1:
+        selection_by_user = galih_helper.Api.getMhsFilterBySmt()
+    else:
+        admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
+        selection_by_user = galih_helper.Api.getMhsFilterByProdiandSmt(admin.kode_prodi)
+        
+    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] ) for t in selection_by_user['data']]
+    list_selection.insert(0, (None, '-- Pilih Mahasiswa --')) 
+    form.nim.choices = list_selection
 
     return render_template(
         "data/basic_input.jinja2",
@@ -180,28 +183,7 @@ def report_filter_prodi(prodi, thak):
 @login_required
 def report():
     """Report Page"""
-    # data = [
-    #     {
-    #         "nama": "M Galih Fikran Syah",
-    #         "semester": "8 (Delapan)",
-    #         "prodi": "Teknik Informatika",
-    #         "relevan": "Relevan"
-    #     },
-    #     {
-    #         "nama": "Dewangga",
-    #         "semester": "8 (Delapan)",
-    #         "prodi": "Teknik Informatika",
-    #         "relevan": "Relevan"
-    #     },
-    #     {
-    #         "nama": "Apriliana",
-    #         "semester": "8 (Delapan)",
-    #         "prodi": "Teknik Informatika",
-    #         "relevan": "Relevan"
-    #     },
-    # ]
-    # INI NGAMBIL DARI DATABASE SAJA YAK!!!!!!
-
+ 
     form = ReportSelectionForm()
     nims = Mahasiswa.query.with_entities(Mahasiswa.nim).all()
     data = galih_helper.PredictModel.predict_multiple(nims)
@@ -242,13 +224,6 @@ def rincian(nim):
         help=help,
     )
 
-@main_bp.route("/excel/download")
-@login_required
-def download_excel():
-    # Lokasi file yang ingin didownload
-    file_path = 'static/src/format.xlsx'
-    # Mengirim file sebagai respons
-    return send_file(file_path, as_attachment=True)
 
 @main_bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -313,27 +288,85 @@ def reset():
     return redirect(request.referrer)
 
 
-@main_bp.route("/data_master", methods=["GET"])
+@main_bp.route("/data_master/<string:prodi>/<string:thak>", methods=["GET"])
 @login_required
-def data_master():
+def data_master_mhs(prodi, thak):
     """Students Data"""
-    # mahasiswa = Mahasiswa.query.all()
-    # prodi = galih_helper.Api.get_prodi()
-    mahasiswa = galih_helper.TestingApi.get_mhs()
-    mahasiswa = mahasiswa['mahasiswa']
-    print(mahasiswa)
-    prodi = galih_helper.TestingApi.get_prodi()
-    prodi = prodi['prodi']
+    
+    form = ReportSelectionForm()
 
+    prodi = galih_helper.Api.getProdi()
+    tahun_masuk = [(datetime.now().year - 4), (datetime.now().year - 3)]
+    
+    list_selection_prodi = [(t['kd_prodi'], str(t['nama'])) for t in prodi['data']]
+    list_selection_prodi.insert(0, (None, '-- Pilih Prodi --')) 
+    form.prodi.choices = list_selection_prodi
+
+    list_selection_batch = [(t, t) for t in tahun_masuk]
+    list_selection_batch.insert(0, (None, '-- Pilih Tahun Akademik --')) 
+    form.batch_year.choices = list_selection_batch
+    
+    mahasiswa = galih_helper.Api.getAllMhsFilterByProdiandThak(prodi, thak)
+    
+    # provide default value
+    if prodi and thak == 'n':
+        form.prodi.default = prodi
+    elif thak and prodi == 'n':
+        form.batch_year.default = thak
+    else:
+        form.batch_year.default = thak
+        form.prodi.default = prodi
+    
+    form.process()
     
     return render_template(
         "data/data_master.jinja2",
         title="Data Master",
         template="dashboard-template",
         current_user=current_user,
-        mahasiswa=mahasiswa,
-        prodi=prodi,
+        mahasiswa=mahasiswa['data'],
+        form=form,
     )
+
+@main_bp.route("/data_master", methods=["GET"])
+@login_required
+def data_master():
+    form = ReportSelectionForm()
+
+    mahasiswa_nim_filled = Mahasiswa.query.with_entities(Mahasiswa.nim).all() 
+    mahasiswa = galih_helper.Api.getMhsFilterBySmt()
+
+    prodi = galih_helper.Api.getProdi()
+    tahun_masuk = [(datetime.now().year - 4), (datetime.now().year - 3)]
+    
+    list_selection_prodi = [(t['kd_prodi'], str(t['nama'])) for t in prodi['data']]
+    list_selection_prodi.insert(0, (None, '-- Pilih Prodi --')) 
+    form.prodi.choices = list_selection_prodi
+
+    list_selection_batch = [(t, t) for t in tahun_masuk]
+    list_selection_batch.insert(0, (None, '-- Pilih Tahun Akademik --')) 
+    form.batch_year.choices = list_selection_batch
+
+    # convert to array
+    mahasiswa_nim_filled_arr = []
+    for nim in mahasiswa_nim_filled:
+        mahasiswa_nim_filled_arr.append(nim[0])
+
+    for mhs in mahasiswa['data']:
+        if mhs['nim'] in mahasiswa_nim_filled_arr:
+            mhs['keterangan'] = "Terisi"
+        else:
+            mhs['keterangan'] = "Belum terisi"
+
+    return render_template(
+        "data/data_master.jinja2",
+        title="Data Master",
+        template="dashboard-template",
+        current_user=current_user,
+        mahasiswa = mahasiswa['data'],
+        form=form,
+    )
+
 
 @main_bp.route("/export_import", methods=["GET"])
 @login_required
@@ -453,11 +486,6 @@ def input_batch():
     file = request.files['file']
     # generate filename
 
-    # save file in local directory
-    # file.save("upload/"+file.filename)
-    # book = xlrd.open_workbook("upload/"+file.filename)
-    # sheet = book.sheet_by_name()
-
     kumpulin_ayok = []
     nim_compare = None
     data = pandas.read_excel(file)
@@ -576,10 +604,6 @@ def input_batch():
     mahasiswa = [] if not nim  else Mahasiswa.query.filter_by(nim=nim).first()
     detail_mahasiswa = {'data': [[]]} if not nim else galih_helper.Api.get_mhs(nim)
 
-    # cuman buat pengingat
-    list_selection = [(t.id, t.nim) for t in Mahasiswa.query.all()]
-    print(list_selection)
-    # hahaha
     return render_template(
         "data/basic_input.jinja2",
         title="Basic Input",

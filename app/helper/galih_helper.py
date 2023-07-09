@@ -10,20 +10,38 @@ from jcopml.utils import load_model
 
 
 class Api():
-    def get_mhs(nim):
+    def getAllMhsFilterByProdiandThak(prodi, thak):
+        oase_key = '785a4062ab84fad16'
+        api_server = 'https://localhost/OASE'
+        response = requests.get("{api_server}/api/Mahasiswa/getAllMhsFilterByProdiandThak_ss?oase_key={oase_key}&prodi={prodi}&thak={thak}".format(oase_key=oase_key, prodi=prodi, thak=thak, api_server=api_server), verify=False)
+        return response.json()
+
+    def getMhsByNim(nim):
         """ Get Mahasiswa From OASE """
         oase_key = '785a4062ab84fad16'
         api_server = 'https://localhost/OASE'
-        response = requests.get("{api_server}/api/Mahasiswa/getMhsByNIMSiputa?oase_key={oase_key}&nim={nim}".format(nim=nim, oase_key=oase_key, api_server=api_server), verify=False)
+        response = requests.get("{api_server}/api/Mahasiswa/getMhsByNIM_ss?oase_key={oase_key}&nim={nim}".format(nim=nim, oase_key=oase_key, api_server=api_server), verify=False)
         return response.json()
         
-    def get_prodi():
+    def getProdi():
         """ Get All Prodi from OASE """
         oase_key = '785a4062ab84fad16'
         api_server = 'https://localhost/OASE'
-        response = requests.get("{api_server}/api/Mahasiswa/getProdiSiputa?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server), verify=False)
+        response = requests.get("{api_server}/api/Mahasiswa/getProdi_ss?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server), verify=False)
         return response.json()
-
+    
+    def getMhsFilterBySmt():
+        oase_key = '785a4062ab84fad16'
+        api_server = 'https://localhost/OASE'
+        response = requests.get("{api_server}/api/Mahasiswa/getMhsFilterBySmt_ss?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server), verify=False)
+        return response.json()
+    
+    def getMhsFilterByProdiandSmt(prodi):
+        oase_key = '785a4062ab84fad16'
+        api_server = 'https://localhost/OASE'
+        response = requests.get("{api_server}/api/Mahasiswa/getMhsFilterBySmt_ss?oase_key={oase_key}&prodi={prodi}".format(oase_key=oase_key, api_server=api_server, prodi=prodi), verify=False)
+        return response.json()
+    
 class TestingApi():
     def get_mhs():
         response = requests.get("http://127.0.0.1:4000/api/get_mahasiswa", verify=False)
@@ -93,7 +111,7 @@ class Pembobotan():
 
 class PredictModel():
     def predict(nim):
-        model = load_model("/opt/project_ta/siputa/app/model/best.pkl")
+        model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
         mahasiswa = Mahasiswa.query.filter_by(nim=nim).first()
         x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
         x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
@@ -106,7 +124,7 @@ class PredictModel():
 
     def predict_multiple(nims):
         # load model
-        model = load_model("/opt/project_ta/siputa/app/model/best.pkl")
+        model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
         results = []
         # search student by nim
         for nim in nims:
