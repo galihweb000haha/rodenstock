@@ -57,16 +57,9 @@
                             <td>{{data.prodi}}</td>
                             <td>{{data.relevan}}</td>
                             <td>
-                                <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/report/rincian/{{data.nim}}"
-                                    ><i class="bx bx-edit-alt me-1"></i> Rincian</a
-                                    >
-                                </div>
-                                </div>
+                                <a type="button" class="btn btn-light text-dark" href="/report/rincian/{{data.nim}}">
+                                    <i class="bx bx-edit-alt me-1"></i> Rincian
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

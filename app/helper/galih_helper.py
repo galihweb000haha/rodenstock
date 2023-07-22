@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from flask import request, jsonify
 import requests
-from app.models import Mahasiswa
+from app.models import Mahasiswa, Prodi
 import pandas as pd
 
 from jcopml.utils import load_model
@@ -129,6 +129,7 @@ class PredictModel():
         # search student by nim
         for nim in nims:
             mahasiswa = Mahasiswa.query.filter_by(nim=nim[0]).first()
+            prodi = Prodi.query.filter_by(kode_prodi=mahasiswa.prodi).first()
             if mahasiswa:
                 # prepare the data
                 # gender = "L" if mahasiswa.gender else "P" 
@@ -140,8 +141,8 @@ class PredictModel():
                 data_result = {
                         "nama": mahasiswa.name,
                         "nim": mahasiswa.nim,
-                        "semester": 8,
-                        "prodi": "Teknik Informatika",
+                        "semester": mahasiswa.semester,
+                        "prodi": prodi.nama_prodi,
                         "relevan": res
                     }
                 

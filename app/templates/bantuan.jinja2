@@ -1,0 +1,74 @@
+{% extends "layout_dashboard.jinja2" %}
+{% block pagestyles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
+{% endblock %}
+{% block content %}
+<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Informasi /</span> Bantuan</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <a href="javascript:;" class="d-flex align-items-center">
+                        <div class="avatar avatar-sm me-2">
+                            <i class="bx bx-message-detail bx-border-circle" size="lg"></i>
+                        </div>
+                        <div class="me-2 text-body h5 mb-0">
+                            Hubungi Admin
+                        </div>
+                        </a>
+                    </div>
+                    <p>Hubungi admin ketika Anda menemui kendala terkait penggunaan dan implementasi baik dari segi fungsi maupun teknis.</p>
+                    <div class="d-flex align-items-center flex-wrap">
+                        <div class="ms-auto">
+                        <a href="https://api.whatsapp.com/send?phone=62{{phone_admin}}&text=Assalamualaikum%0D%0AHalo%20Admin.%20Saya%20mau%20menanyakan%20mengenai..." target="_blank" class="btn btn-primary me-2">Terhubung ke Whatsapp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <a href="javascript:;" class="d-flex align-items-center">
+                        <div class="avatar avatar-sm me-2">
+                            <i class="bx bx-book-reader bx-border-circle" size="lg"></i>
+                        </div>
+                        <div class="me-2 text-body h5 mb-0">
+                            Buku Panduan
+                        </div>
+                        </a>
+                    </div>
+                    <p>Pahami cara penggunaan dalam menggunakan aplikasi dengan baik. Kami sangat memperhatikan pengalaman pengguna.</p>
+                    <div class="d-flex align-items-center flex-wrap">
+                        <div class="ms-auto">
+                            <a href="/bantuan/manual_book" class="btn btn-primary me-2">Download buku panduan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block additionalscripts %}
+    <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('.my_selection').select2();
+            $('#navbar-collapse .select2-selection__arrow').removeClass('select2-selection__arrow')
+            $('#navbar-collapse .select2-selection').css('border', 0)
+            $('#search_menu').on('change', function() {
+                document.location.href = $(this).val()
+            })
+        });
+        
+    </script>
+
+{% endblock %}

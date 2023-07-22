@@ -1,16 +1,15 @@
 """ Routes for prodi user management """
-from flask import Blueprint, flash, redirect, render_template, url_for, request
+from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from flask_login import current_user, login_required, logout_user
+from flask_mail import Message
 
 from app.models import Prodi
 from app.models import AdminProdi
 from app.models import User
-
 from app.forms import SignupForm, ProdiForm
-from app import db
+from app import app, db, mail
 
 from functools import wraps
-from flask import abort
 
 
 def requires_access_level(access_level):
@@ -38,6 +37,13 @@ def requires_access_level(access_level):
 prodi_bp = Blueprint(
     "prodi_bp", __name__, template_folder="templates", static_folder="static"
 )
+
+def send_email(subject, recipient, body):
+    msg = Message(subject=subject,
+                  sender=app.config['MAIL_USERNAME'],
+                  recipients=[recipient])
+    msg.body = body
+    mail.send(msg)
 
 @prodi_bp.route("/prodi", methods=["GET", "POST"])
 @login_required
@@ -213,8 +219,14 @@ def reset_admin(user_id):
     user = User.query.get(user_id)
     if user:
         user.set_password(default_passwd)
+        admin_prodi = AdminProdi.query.filter_by(user_id=user_id).first()
+        admin_prodi.request_reset = False
         db.session.commit()
-        flash("Passwrod berhasil direset!")
+        recipient = user.email
+        subject = "PERMINTAAN RESET PASSWORD"
+        body = "Password berhasil di reset menjadi 'galihganteng'"
+        send_email(subject, recipient, body)    
+        flash("Password berhasil direset!")
         return redirect(request.referrer)
     
     flash("User admin tidak ditemukan!")

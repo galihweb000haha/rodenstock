@@ -68,6 +68,7 @@ class Mahasiswa(db.Model):
     gender = db.Column(db.Boolean, unique=False, nullable=True)
     batch_year = db.Column(db.String(4), nullable=True)
     prodi = db.Column(db.String(2), db.ForeignKey(Prodi.kode_prodi), primary_key=True)
+    semester = db.Column(db.Integer, nullable=True)
 
     # secondary information
     gpa_score = db.Column(db.Float, nullable=True)
@@ -109,6 +110,8 @@ class AdminProdi(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
     kode_prodi = db.Column(db.String(2), db.ForeignKey(Prodi.kode_prodi), primary_key=True)
+    request_reset = db.Column(db.Boolean, nullable=True)
+
     def __repr__(self):
         return "<AdminProdi(user_id='%s', prodi_id='%s')>" % (
             self.user_id,

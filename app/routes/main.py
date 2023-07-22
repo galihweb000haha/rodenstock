@@ -1,5 +1,5 @@
 """Logged-in page routes."""
-from flask import Blueprint, redirect, render_template, url_for, request, jsonify, send_file, flash
+from flask import Blueprint, redirect, render_template, url_for, request, send_file, flash
 from flask_login import current_user, login_required, logout_user
 # from openpyxl import Workbook
 # from io import BytesIO
@@ -18,6 +18,7 @@ from app.models import Prestasi
 from app.models import Organisasi
 from app.models import Sertifikat
 from app.models import AdminProdi
+from app.models import User
 
 from app.forms import MahasiswaForm
 from app.forms import ReportSelectionForm
@@ -86,7 +87,7 @@ def basic_input_mhs(nim):
     if current_user.level == 1:
         selection_by_user = galih_helper.Api.getMhsFilterBySmt()
     else:
-        admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
+        admin = AdminProdi.query.filter_by(user_id=current_user.i).first()
         selection_by_user = galih_helper.Api.getMhsFilterByProdiandSmt(admin.kode_prodi)
         
     list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] ) for t in selection_by_user['data']]
@@ -612,8 +613,34 @@ def input_batch():
         mahasiswa=mahasiswa,
         detail_mahasiswa=detail_mahasiswa['data'][0],
         form=form,
-
     )
+
+@main_bp.route("/analisis", methods=["GET"])
+@login_required
+def analisis():
+    return render_template(
+        "report/analisis.jinja2",
+        title="Analisis Data",
+        template="dashboard-template",
+    )
+
+
+@main_bp.route("/bantuan", methods=["GET"])
+def bantuan():
+    phone_admin = User.query.filter_by(level=1).first()
+    return render_template(
+        "bantuan.jinja2",
+        title="Bantuan",
+        template="dashboard-template",
+        current_user=current_user,
+        phone_admin=phone_admin.no_hp,
+    )
+
+@main_bp.route("/bantuan/manual_book")
+def manual_book():
+    file_path = 'static/src/ManualBook.pdf'
+    return send_file(file_path, as_attachment=True)
+
 
 @main_bp.app_errorhandler(404)
 def handle_404(err):

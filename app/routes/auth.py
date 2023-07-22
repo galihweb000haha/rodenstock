@@ -9,7 +9,7 @@ sys.path.insert(1, '/home/galih/flasklogin-tutorial/app')
 
 from app import login_manager
 from app.forms import LoginForm, SignupForm
-from app.models import User
+from app.models import User, AdminProdi
 from app import db
 
 # Blueprint Configuration
@@ -69,7 +69,7 @@ def login():
             next_page = request.args.get("next")
             flash("Berhasil Login!")
             return redirect(next_page or url_for("main_bp.dashboard"))
-        flash("Username & Password Salah")
+        flash("Email atau Password Salah")
         return redirect(url_for("auth_bp.login"))
     return render_template(
         "login.jinja2",
@@ -78,6 +78,21 @@ def login():
         template="login-page",
         body="Log in with your User account.",
     )
+
+
+@auth_bp.route("/forgot", methods=["GET"])
+def forgot():
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    if user:
+        admin_prodi = AdminProdi.query.filter_by(user_id=user.id).first()
+        admin_prodi.request_reset = True
+        db.session.commit()
+        flash("Cek email Anda secara berkala !", 'success')
+    else:
+        flash("Email yang Anda masukkan tidak terdaftar !", 'danger')
+
+    return redirect(url_for("auth_bp.login"))
 
 
 @login_manager.user_loader
@@ -91,5 +106,5 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
-    flash("You must be logged in to view that page.")
+    flash("Anda harus login terlebih dahulu!")
     return redirect(url_for("auth_bp.login"))

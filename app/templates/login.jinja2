@@ -10,16 +10,22 @@
                 <div class="app-brand justify-content-center">
                     <img src="{{ url_for('static', filename='img/logo.png') }}" width="100%" />
                 </div>
-                {% for message in get_flashed_messages() %}
-                    <div class="alert alert-danger alert-dismissible" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        {{ message }}
-                    </div>
-                {% endfor %}
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{category}} alert-dismissible" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
                 <!-- /Logo -->
                 <h4 class="mb-2">Selamat Datang</h4>
                 <p class="mb-4"><b>Sistem Informasi Asosiasi Pekerjaan</b> portal analisis pencapaian mahasiswa. Kami menyajikan metode analisis yang efektif dan mendalam.</p>
-
+                <h4 id="title-reset" class="d-none">Permintaan Reset Password</h4>
                 <form id="formAuthentication" class="mb-3" action="/login" method="POST">
                     {{ form.csrf_token }}
                     <div class="mb-3">
@@ -38,13 +44,13 @@
                         <fieldset class="password">
                             <div class="d-flex justify-content-between">
                                 <label class="form-label" for="password">{{ form.password.label }}</label>
-                                <a href="#">
+                                <a href="#" id="forgot">
                                     <small>Lupa Password?</small>
                                 </a>
                             </div>
                             <div class="input-group input-group-merge">
                                 {{ form.password(placeholder='............', class="form-control") }}
-                                {% if form.email.errors %}
+                                {% if form.password.errors %}
                                 <ul class="errors">
                                     {% for error in form.password.errors %}
                                     <li>{{ error }}</li>{% endfor %}
@@ -54,16 +60,13 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="mb-3">
-                        <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember-me" />
-                        <label class="form-check-label" for="remember-me"> Ingat Saya! </label>
-                        </div>
-                    </div>
-                    <div class="mb-3">
+                    <div class="mb-3 button-submit">
                         <fieldset>
                             {{ form.submit(class='btn btn-primary d-grid w-100') }}
                         </fieldset>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-primary anchor-reset d-none" href="/forgot">Reset Password</a>
                     </div>
                 </form>
             </div>
@@ -72,4 +75,23 @@
         </div>
     </div>
 </div>
+    {% block additionalscripts %}
+        <script>
+            $('#forgot').click(function(e) {
+                e.preventDefault()
+                $('.form-password-toggle').hide()
+                $('#title-reset').removeClass('d-none')
+                $('.button-submit').hide()
+                $('.anchor-reset').removeClass('d-none')
+            })
+
+            $('.anchor-reset').click(function(e) {
+                e.preventDefault()
+                email = $('#email').val()
+                href = $(this).attr('href') 
+                document.location.href = href + '?email=' + email
+                console.log(href + '?email=' + email)
+            })
+        </script>
+    {% endblock %}
 {% endblock %}
