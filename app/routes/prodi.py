@@ -6,7 +6,7 @@ from flask_mail import Message
 from app.models import Prodi
 from app.models import AdminProdi
 from app.models import User
-from app.forms import SignupForm, ProdiForm
+from app.forms import SignupForm, ProdiForm, Mahasiswa
 from app import app, db, mail
 
 from functools import wraps
@@ -79,18 +79,19 @@ def prodi():
     if form.validate_on_submit():
 
         existing_prodi = Prodi.query.filter_by(nama_prodi=form.name.data).first()
-        existing_kode_prodi = Prodi.query.filter_by(kode_prodi=form.name.data).first()
+        existing_kode_prodi = Prodi.query.filter_by(kode_prodi=form.code.data).first()
         if existing_kode_prodi is None and existing_prodi is None:
+            
             prodi = Prodi(
                 nama_prodi=form.name.data, kode_prodi=form.code.data
             )
             db.session.add(prodi)
             db.session.commit()
 
-            flash("Prodi berhasil dibuat.")
+            flash("Prodi berhasil dibuat.", 'success')
             return redirect(referrer)
         
-        flash("Nama prodi atau kode prodi sudah ada.")
+        flash("Nama prodi atau kode prodi sudah ada.", 'danger')
         return redirect(referrer)
 
     
@@ -107,10 +108,15 @@ def prodi():
 @login_required
 @requires_access_level(1)
 def delete_prodi(kode_prodi=None):
-    db.session.query(Prodi).filter_by(kode_prodi=kode_prodi).delete()
-    db.session.commit()
+    prodi_is_exists = Mahasiswa.query.filter_by(prodi=kode_prodi).all()
     referrer = request.referrer
-    flash("Prodi berhasil dihapus.")
+    if prodi_is_exists:
+        flash("Prodi tidak dapat dihapus. Beberapa mahasiswa berelasi dengan prodi tersebut. ", 'danger')
+    else:
+        db.session.query(Prodi).filter_by(kode_prodi=kode_prodi).delete()
+        db.session.commit()
+        flash("Prodi berhasil dihapus.", 'success')
+
     return redirect(referrer)
 
 
@@ -148,11 +154,11 @@ def admin_prodi():
             )
             db.session.add(admin)
             db.session.commit()
-            flash("User admin prodi berhasil dibuat.")
+            flash("User admin prodi berhasil dibuat.", 'success')
             return redirect(referrer)
 
         
-        flash("Pengguna telah menggunakan email yang diinputkan.")
+        flash("Pengguna telah menggunakan email yang diinputkan.", 'danger')
         return redirect(referrer)
 
     else: 
@@ -180,7 +186,7 @@ def delete_admin(user_id_param):
     User.query.filter_by(id = user_id_param).delete()
 
     db.session.commit()
-    flash("User admin prodi berhasil dihapus.")
+    flash("User admin prodi berhasil dihapus.", 'success')
     return redirect(request.referrer)
 
 @prodi_bp.route("/signup", methods=["GET", "POST"])
@@ -202,7 +208,7 @@ def signup():
             db.session.add(user)
             db.session.commit()  # Create new user
             return redirect(url_for("main_bp.index"))
-        flash("A user already exists with that email address.")
+        flash("A user already exists with that email address.", 'danger')
     return render_template(
         "signup.jinja2",
         title="Create an Account.",
@@ -226,8 +232,8 @@ def reset_admin(user_id):
         subject = "PERMINTAAN RESET PASSWORD"
         body = "Password berhasil di reset menjadi 'galihganteng'"
         send_email(subject, recipient, body)    
-        flash("Password berhasil direset!")
+        flash("Password berhasil direset!", 'success')
         return redirect(request.referrer)
     
-    flash("User admin tidak ditemukan!")
+    flash("User admin tidak ditemukan!", 'danger')
     return redirect(request.referrer)

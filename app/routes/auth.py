@@ -67,9 +67,9 @@ def login():
         if user and user.check_password(password=form.password.data):
             login_user(user)
             next_page = request.args.get("next")
-            flash("Berhasil Login!")
+            flash("Berhasil Login!", 'success')
             return redirect(next_page or url_for("main_bp.dashboard"))
-        flash("Email atau Password Salah")
+        flash("Email atau Password Salah", 'danger')
         return redirect(url_for("auth_bp.login"))
     return render_template(
         "login.jinja2",
@@ -106,5 +106,5 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
-    flash("Anda harus login terlebih dahulu!")
+    flash("Anda harus login terlebih dahulu!", 'danger')
     return redirect(url_for("auth_bp.login"))

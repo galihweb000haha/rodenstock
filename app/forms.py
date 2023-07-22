@@ -70,7 +70,7 @@ class SignupForm(FlaskForm):
         "Konfirmasi Password",
         validators=[
             DataRequired(),
-            EqualTo("password", message="Passwords must match."),
+            EqualTo("password", message="Passwords harus match."),
         ],
     )
 

@@ -254,7 +254,7 @@ def settings():
         
         db.session.commit()
         
-        flash("Profil berhasil diperbarui")
+        flash("Profil berhasil diperbarui", 'success')
         return redirect(request.referrer)
 
     form.process()
@@ -283,9 +283,9 @@ def reset():
     if current_user.check_password(password=old_password):
         current_user.set_password(new_password)
         db.session.commit()
-        flash("Passwrod berhasil diperbarui!")
+        flash("Passwrod berhasil diperbarui!", 'success')
         return redirect(request.referrer)
-    flash("Passwrod gagal diperbarui!")
+    flash("Passwrod gagal diperbarui!", 'danger')
     return redirect(request.referrer)
 
 
