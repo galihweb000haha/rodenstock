@@ -184,11 +184,42 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+
+        <div class="row row-bordered g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Matriks Korelasi &#9432;</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                            <div id="chart_jenis_kelamin"></div>
+                            </div>
+                            <div class="col-md-6">
+                            <div id="chart_pekerjaan_ortu"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+
+
+
+
+
     </div>
 </div>
 
 {% block additionalscripts %}
+    <script src="{{ url_for('static', filename='vendor/libs/apex-charts/apexcharts.js') }}"></script>
     <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             $('.my_selection').select2();

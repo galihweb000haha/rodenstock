@@ -12,35 +12,42 @@ from jcopml.utils import load_model
 class Api():
     def getAllMhsFilterByProdiandThak(prodi, thak):
         oase_key = '785a4062ab84fad16'
-        api_server = 'https://localhost/OASE'
+        api_server = 'https://127.0.0.1/OASE'
         response = requests.get("{api_server}/api/Mahasiswa/getAllMhsFilterByProdiandThak_ss?oase_key={oase_key}&prodi={prodi}&thak={thak}".format(oase_key=oase_key, prodi=prodi, thak=thak, api_server=api_server), verify=False)
         return response.json()
 
     def getMhsByNim(nim):
         """ Get Mahasiswa From OASE """
         oase_key = '785a4062ab84fad16'
-        api_server = 'https://localhost/OASE'
+        api_server = 'https://127.0.0.1/OASE'
         response = requests.get("{api_server}/api/Mahasiswa/getMhsByNIM_ss?oase_key={oase_key}&nim={nim}".format(nim=nim, oase_key=oase_key, api_server=api_server), verify=False)
         return response.json()
         
     def getProdi():
         """ Get All Prodi from OASE """
         oase_key = '785a4062ab84fad16'
-        api_server = 'https://localhost/OASE'
+        api_server = 'https://127.0.0.1/OASE'
         response = requests.get("{api_server}/api/Mahasiswa/getProdi_ss?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server), verify=False)
         return response.json()
     
     def getMhsFilterBySmt():
         oase_key = '785a4062ab84fad16'
-        api_server = 'https://localhost/OASE'
+        api_server = 'https://127.0.0.1/OASE'
         response = requests.get("{api_server}/api/Mahasiswa/getMhsFilterBySmt_ss?oase_key={oase_key}".format(oase_key=oase_key, api_server=api_server), verify=False)
         return response.json()
     
     def getMhsFilterByProdiandSmt(prodi):
         oase_key = '785a4062ab84fad16'
-        api_server = 'https://localhost/OASE'
+        api_server = 'https://127.0.0.1/OASE'
         response = requests.get("{api_server}/api/Mahasiswa/getMhsFilterBySmt_ss?oase_key={oase_key}&prodi={prodi}".format(oase_key=oase_key, api_server=api_server, prodi=prodi), verify=False)
         return response.json()
+    
+    def getIPKMhs(nim, prodi):
+        oase_key = '785a4062ab84fad16'
+        api_server = 'https://127.0.0.1/OASE'
+        response = requests.get("{api_server}/api/Mahasiswa/getIPK_ss?oase_key={oase_key}&nim={nim}&prodi={prodi}".format(oase_key=oase_key, api_server=api_server, nim=nim, prodi=prodi), verify=False)
+        return response.json()
+
     
 class TestingApi():
     def get_mhs():

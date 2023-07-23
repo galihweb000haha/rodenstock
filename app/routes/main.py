@@ -97,6 +97,7 @@ def basic_input_mhs(nim):
     form.process()
 
     api_mahasiswa = galih_helper.Api.getMhsByNim(nim)
+    nilai_ipk = galih_helper.Api.getIPKMhs(nim, api_mahasiswa['data'][0]['prodi'])
     mahasiswa = [] if not nim else Mahasiswa.query.filter_by(nim=nim).first()
     
     if mahasiswa:
@@ -115,6 +116,7 @@ def basic_input_mhs(nim):
         template="dashboard-template",
         current_user=current_user,
         api_mahasiswa=api_mahasiswa['data'][0],
+        nilai_ipk=nilai_ipk['data'],
         data_pencapaian=data_pencapaian,
         form=form,
     )
@@ -302,28 +304,30 @@ def data_master_mhs(prodi, thak):
     
     form = ReportSelectionForm()
 
-    prodi = galih_helper.Api.getProdi()
-    tahun_masuk = [(datetime.now().year - 4), (datetime.now().year - 3)]
+    prodi_master = galih_helper.Api.getProdi()
+    tahun_masuk_master = [(datetime.now().year - 4), (datetime.now().year - 3)]
     
-    list_selection_prodi = [(t['kd_prodi'], str(t['nama'])) for t in prodi['data']]
+    list_selection_prodi = [(t['kd_prodi'], str(t['nama'])) for t in prodi_master['data']]
     list_selection_prodi.insert(0, (None, '-- Pilih Prodi --')) 
     form.prodi.choices = list_selection_prodi
 
-    list_selection_batch = [(t, t) for t in tahun_masuk]
+    list_selection_batch = [(t, t) for t in tahun_masuk_master]
     list_selection_batch.insert(0, (None, '-- Pilih Tahun Akademik --')) 
     form.batch_year.choices = list_selection_batch
+    
+    if prodi == 'n':
+        prodi = ''
+    if thak == 'n':
+        thak = ''
     
     mahasiswa = galih_helper.Api.getAllMhsFilterByProdiandThak(prodi, thak)
     
     # provide default value
-    if prodi and thak == 'n':
+    if prodi:
         form.prodi.default = prodi
-    elif thak and prodi == 'n':
+    if thak:
         form.batch_year.default = thak
-    else:
-        form.batch_year.default = thak
-        form.prodi.default = prodi
-    
+
     form.process()
     
     return render_template(
