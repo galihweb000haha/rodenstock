@@ -26,6 +26,8 @@ app.config['MAIL_PASSWORD'] = 'rkgsuobqdhwdsypc'
 # rkgsuobqdhwdsypc
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Batasi ke 16 MB
+
 
 mail = Mail(app)
 csrf = CSRFProtect(app)

@@ -33,6 +33,7 @@
             </div>
             <!-- Form controls -->
             <form action="{{ url_for('main_bp.input_data') }}" method="post" id="form-single-import">
+                {{ form.csrf_token }}
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center justify-content-between">
@@ -70,6 +71,10 @@
                                             <li class="list-group-item"><div width="130px"><strong>Prodi:</strong></div>{{api_mahasiswa['nama_prodi']}}</li>
                                             <li class="list-group-item"><div width="130px"><strong>Semester:</strong></div>{{api_mahasiswa['semester']}}</li>
 
+                                            <input name="tahun_masuk" type="hidden" value="{{api_mahasiswa['tahun_masuk']}}" />
+                                            <input name="state" type="hidden" value="{{api_mahasiswa['status_mahasiswa']}}" />
+                                            <input name="prodi" type="hidden" value="{{api_mahasiswa['prodi']}}" />
+                                            <input name="semester" type="hidden" value="{{api_mahasiswa['semester']}}" />
                                             <input name="parents_income" type="hidden" value="{{api_mahasiswa['penghasilan_ayah']}}" />
                                             <input name="pekerjaan_ortu" type="hidden" value="{{api_mahasiswa['pekerjaan_ayah']}}" />
                                             <input name="jk" type="hidden" value="{{api_mahasiswa['jk']}}" />

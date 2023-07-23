@@ -5,8 +5,8 @@ from flask_login import current_user, login_required, logout_user
 # from io import BytesIO
 from datetime import datetime
 
-import sys, requests, pandas, math
- 
+import sys, requests, pandas, math, re
+
 # setting path
 # sys.path.insert(1, '/home/galih/flasklogin-tutorial/app')
 
@@ -402,10 +402,26 @@ def input_data():
     """Single Import"""
 
     # pembobotan terhadap attribut utama
-    prestasi = galih_helper.Pembobotan.pembobotan_prestasi(request.form.getlist('prestasi'))
-    organisasi = galih_helper.Pembobotan.pembobotan_organisasi(request.form.getlist('organisasi'))
-    sertifikat = galih_helper.Pembobotan.pembobotan_sertifikat(request.form.getlist('sertifikat'))
-  
+    # prestasi = galih_helper.Pembobotan.pembobotan_prestasi(request.form.getlist('prestasi'))
+    # organisasi = galih_helper.Pembobotan.pembobotan_organisasi(request.form.getlist('organisasi'))
+    # sertifikat = galih_helper.Pembobotan.pembobotan_sertifikat(request.form.getlist('sertifikat'))
+    
+    list_prestasi = request.form.getlist('prestasi')
+    prestasi = []
+    for lp in list_prestasi:
+        prestasi.append(int(lp))
+    prestasi = sum(prestasi)
+    list_sertifikat = request.form.getlist('sertifikat')
+    sertifikat = []
+    for lp in list_sertifikat:
+        sertifikat.append(int(lp))
+    sertifikat = sum(sertifikat)
+    list_organisasi = request.form.getlist('organisasi')
+    organisasi = []
+    for lp in list_organisasi:
+        organisasi.append(int(lp))
+    organisasi = sum(organisasi)
+
     nama_prestasi = request.form.getlist('nama_prestasi')
     nama_organisasi = request.form.getlist('nama_organisasi')
     nama_sertifikat = request.form.getlist('nama_sertifikat')
@@ -415,78 +431,112 @@ def input_data():
     name = request.form['nama']
     gender = 0 if request.form['jk'].lower() == 'p' else 1
     # state = 0 if request.form['state'].lower() == 'Aktif' else 1
-    # batch_year = request.form['batch_year']
+    
+    batch_year = request.form['tahun_masuk']
+    state = request.form['state']
+    prodi = request.form['prodi']
+    semester = request.form['semester']
     gpa_score = request.form['ipk']
     parents_income = request.form['parents_income']
     pekerjaan_ortu = request.form['pekerjaan_ortu']
+
+    pattern = re.compile("^[A-Za-z_.]+$")
+    if not (pattern.fullmatch(parents_income)) or parents_income == 'None':
+        # ambil rata-rata sajah
+        parents_incomes = Mahasiswa.query.with_entities(Mahasiswa.parents_income).all()
+        list_parent_income = []
+        for pi in parents_incomes:
+            list_parent_income.append(pi[0])
+        parents_income = sum(list_parent_income) / len(list_parent_income)
+        parents_income = round(parents_income, -6)
+
+    if pekerjaan_ortu == 'None':
+        pekerjaan_ortus = Mahasiswa.query.with_entities(Mahasiswa.pekerjaan_ortu).all()
+        list_parent_income = []
+        for po in pekerjaan_ortus:
+            list_parent_income.append(po[0])
+            
+        frequency = {}
+        for number in list_parent_income:
+            frequency.setdefault(number, 0)
+            frequency[number]+=1
+        highestFrequency = max(frequency.values())
+        for number, freq in frequency.items():
+            if freq == highestFrequency:
+                    pekerjaan_ortu = number
+
     data_mhs = Mahasiswa.query.filter_by(nim=nim).first()
 
-    # reset achievement dulu supaya tidak redundant
-    all_sertifikat = Sertifikat.query.filter(Sertifikat.mahasiswa_id == data_mhs.id).all()
-    all_prestasi = Prestasi.query.filter(Prestasi.mahasiswa_id == data_mhs.id).all()
-    all_organisasi = Organisasi.query.filter(Organisasi.mahasiswa_id == data_mhs.id).all()
+    if data_mhs:
+        # reset achievement dulu supaya tidak redundant
+        all_sertifikat = Sertifikat.query.filter(Sertifikat.mahasiswa_id == data_mhs.id).all()
+        all_prestasi = Prestasi.query.filter(Prestasi.mahasiswa_id == data_mhs.id).all()
+        all_organisasi = Organisasi.query.filter(Organisasi.mahasiswa_id == data_mhs.id).all()
 
-    # loop for delete
-    if all_sertifikat:
-        for sert in all_sertifikat:
-            db.session.delete(sert)
-        db.session.commit()
-    if all_prestasi:
-        for pres in all_prestasi:
-            db.session.delete(pres)
-        db.session.commit()
-    if all_organisasi:
-        for org in all_organisasi:
-            db.session.delete(org)
-        db.session.commit()
+        # loop for delete
+        if all_sertifikat:
+            for sert in all_sertifikat:
+                db.session.delete(sert)
+            db.session.commit()
+        if all_prestasi:
+            for pres in all_prestasi:
+                db.session.delete(pres)
+            db.session.commit()
+        if all_organisasi:
+            for org in all_organisasi:
+                db.session.delete(org)
+            db.session.commit()
+    else:
+        # create data mahasiswa terlebih dahulu
+        data_mhs = Mahasiswa(
+            nim=nim, 
+            gender=gender, 
+            gpa_score=gpa_score, 
+            name=name, 
+            sertifikat=sertifikat, 
+            organisasi=organisasi, 
+            prestasi=prestasi, 
+            parents_income=parents_income, 
+            pekerjaan_ortu=pekerjaan_ortu,
+            batch_year=batch_year,
+            semester=semester,
+            prodi=prodi,
+            state=state,
+            )
+        try:
+            db.session.add(data_mhs)
+            db.session.commit()
+        except Exception as e:
+            # Tangkap kesalahan dan cetak pesan errornya
+            error_message = str(e)
+            print(f"Error querying database: {error_message}")
 
     # Masukkin achievement ke database
     # 1. prestasi
-    for index, value in enumerate(request.form.getlist('prestasi')):
+    for index, value in enumerate(list_prestasi):
         prestasi_store = Prestasi(mahasiswa_id=data_mhs.id, nama_prestasi=nama_prestasi[index], jenis_prestasi=value)
         db.session.add(prestasi_store)
         db.session.commit()
     # 2. organisasi
-    for index, value in enumerate(request.form.getlist('organisasi')):
+    for index, value in enumerate(list_organisasi):
         organisasi_store = Organisasi(mahasiswa_id=data_mhs.id, nama_organisasi=nama_organisasi[index], peran_organisasi=value)
         db.session.add(organisasi_store)
         db.session.commit()
     # 3. Sertifikat
-    for index, value in enumerate(request.form.getlist('sertifikat')):
+    for index, value in enumerate(list_sertifikat):
         sertifikat_store = Sertifikat(mahasiswa_id=data_mhs.id, nama_sertifikat=nama_sertifikat[index], jenis_sertifikat=value)
         db.session.add(sertifikat_store)
         db.session.commit()
     
 
-    if not data_mhs:
-        # create data
-        mhs = Mahasiswa(nim=nim, gender=gender, gpa_score=gpa_score, name=name, sertifikat=sertifikat, organisasi=organisasi, prestasi=prestasi, parents_income=parents_income, pekerjaan_ortu=pekerjaan_ortu)
-        db.session.add(mhs)
-        db.session.commit()
+    # predict relevance
+    res = galih_helper.PredictModel.predict(nim)
+    data_mhs.relevan = res[0]
+    data_mhs.predict_proba = res[1]
 
-        # predict relevance
-        res = galih_helper.PredictModel.predict(nim)
-        data_mhs.relevan = res[0]
-        data_mhs.predict_proba = res[1]
+    db.session.commit()
 
-        db.session.commit()
-    else:
-        # update data
-        res = galih_helper.PredictModel.predict(nim)
-
-        existing_mhs = Mahasiswa.query.filter_by(nim=nim).first()
-        existing_mhs.gpa_score = gpa_score
-        existing_mhs.prestasi = prestasi
-        existing_mhs.organisasi = organisasi
-        existing_mhs.sertifikat = sertifikat
-        existing_mhs.gender = gender
-        existing_mhs.relevan = res[0]
-        existing_mhs.predict_proba = res[1]
-        # existing_mhs.state = state
-        # existing_mhs.batch_year = batch_year
-        
-        db.session.commit()
-    
+    flash("Penambahan data berhasil dilakukan!", 'success')
     return redirect(url_for("main_bp.basic_input"))
    
 

@@ -60,7 +60,7 @@ class Prodi(db.Model):
 class Mahasiswa(db.Model):
     __tablename__ = "mahasiswa"
     # main information
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nim = db.Column(db.String(8))
     name = db.Column(db.String(50))
     state = db.Column(db.String(20), nullable=True)
@@ -71,7 +71,7 @@ class Mahasiswa(db.Model):
 
     # secondary information
     gpa_score = db.Column(db.Float, nullable=True)
-    toefl_score = db.Column(db.Float, nullable=True)
+    # toefl_score = db.Column(db.Float, nullable=True)
     parents_income = db.Column(db.Float, nullable=True)
     pekerjaan_ortu = db.Column(db.String(70), nullable=True)
     # geographic information

@@ -121,11 +121,17 @@ class PredictModel():
         model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
         mahasiswa = Mahasiswa.query.filter_by(nim=nim).first()
         x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
-        x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
-                [1, 2, 2, 2, 3], inplace=True)
+
+
+        print("======================", x_pred['pekerjaan_ortu'][0], "===============")
+        if x_pred['pekerjaan_ortu'][0] not in ['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns']:
+             x_pred['pekerjaan_ortu'] = 2
+        else:
+            x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
+                    [1, 2, 2, 2, 3], inplace=True)
         res = model.predict(x_pred)[0]
         predictions = model.predict_proba(x_pred)
-        tmp = predictions.tolist()
+        # tmp = predictions.tolist()
         
         return [0 if res == 'Tidak Relevan' else 1, round(predictions.tolist()[0][0], 2) * 100]
 
