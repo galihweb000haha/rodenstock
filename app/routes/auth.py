@@ -11,6 +11,7 @@ from app import login_manager
 from app.forms import LoginForm, SignupForm
 from app.models import User, AdminProdi
 from app import db
+from datetime import datetime
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -66,6 +67,10 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user)
+            # update last login
+            user.last_login = datetime.now()
+            db.session.commit() 
+            # redirect
             next_page = request.args.get("next")
             flash("Berhasil Login!", 'success')
             return redirect(next_page or url_for("main_bp.dashboard"))

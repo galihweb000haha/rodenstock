@@ -240,10 +240,16 @@ def settings():
 
 
     if form.validate_on_submit():
+        referrer = request.referrer
+
         name = form.name.data
         email = form.email.data
         no_hp = form.no_hp.data
         gender = form.gender.data
+
+        if gender == 'None':
+            flash("Pilih jenis kelamin terlebih dahulu!", 'danger')
+            return redirect(referrer)
 
         form.process()
 
@@ -255,7 +261,7 @@ def settings():
         db.session.commit()
         
         flash("Profil berhasil diperbarui", 'success')
-        return redirect(request.referrer)
+        return redirect(referrer)
 
     form.process()
 

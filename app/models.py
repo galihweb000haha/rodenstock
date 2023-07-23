@@ -19,8 +19,8 @@ class User(UserMixin, db.Model):
     )
     gender = db.Column(db.Boolean, unique=False, nullable=True)
     no_hp = db.Column(db.String(20), unique=False, nullable=True)
-    foto = db.Column(db.Text, unique=False, nullable=True)
-    website = db.Column(db.String(60), index=False, unique=False, nullable=True)
+    # foto = db.Column(db.Text, unique=False, nullable=True)
+    # website = db.Column(db.String(60), index=False, unique=False, nullable=True)
     level = db.Column(db.Integer, nullable=True)
     created_on = db.Column(db.DateTime, index=False, unique=False, nullable=True)
     last_login = db.Column(db.DateTime, index=False, unique=False, nullable=True)
@@ -42,7 +42,6 @@ class User(UserMixin, db.Model):
             'email': self.email,
             'no_hp': self.no_hp,
             'gender': self.gender,
-            'foto': self.foto,
             'level': self.level,
         }
 

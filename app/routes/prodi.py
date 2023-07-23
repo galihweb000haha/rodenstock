@@ -10,6 +10,8 @@ from app.forms import SignupForm, ProdiForm, Mahasiswa
 from app import app, db, mail
 
 from functools import wraps
+from datetime import datetime
+import re
 
 
 def requires_access_level(access_level):
@@ -78,6 +80,11 @@ def prodi():
 
     if form.validate_on_submit():
 
+        pattern = re.compile("[0-9]+")
+        if not (pattern.fullmatch(form.code.data) and len(form.code.data) == 2):
+            flash("Kode prodi tidak valid.", 'success')
+            return redirect(referrer)
+
         existing_prodi = Prodi.query.filter_by(nama_prodi=form.name.data).first()
         existing_kode_prodi = Prodi.query.filter_by(kode_prodi=form.code.data).first()
         if existing_kode_prodi is None and existing_prodi is None:
@@ -137,6 +144,13 @@ def admin_prodi():
     referrer = request.referrer
     
     if form.validate_on_submit():
+        if form.prodi.data == 'None':
+            flash("Pilih prodi terlebih dahulu!", 'danger')
+            return redirect(referrer)
+        
+        if form.confirm.data != form.password.data:
+            flash("Konfirmasi password tidak cocok dengan password yang Anda masukkan!", 'danger')
+            return redirect(referrer)
         
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user is None:
@@ -145,6 +159,7 @@ def admin_prodi():
                 name=form.name.data, email=form.email.data, level=2
             )
             user.set_password(form.password.data)
+            user.created_on = datetime.now()
             db.session.add(user)
             db.session.commit()
 
@@ -158,7 +173,7 @@ def admin_prodi():
             return redirect(referrer)
 
         
-        flash("Pengguna telah menggunakan email yang diinputkan.", 'danger')
+        flash("Pengguna lain telah menggunakan email yang diinputkan.", 'danger')
         return redirect(referrer)
 
     else: 
