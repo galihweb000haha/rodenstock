@@ -67,18 +67,18 @@ class TestingApi():
 class Pembobotan():
     bobot = {
             'prestasi':{
-                'Tingkat Internasional': 3,
-                'Tingkat Nasional': 2,
-                'Tingkat Regional': 1,
+                'tingkat internasional': 3,
+                'tingkat nasional': 2,
+                'tingkat regional': 1,
             },
             'sertifikat':{
-                'Sertifikat Keahlian': 3,
-                'Sertifikat Kursus': 2,
-                'Sertifikat Seminar/Webinar': 1,
+                'sertifikat kompetensi': 3,
+                'sertifikat kursus': 2,
+                'sertifikat seminar/sebinar': 1,
             },
             'organisasi':{
-                'Pengurus': 2,
-                'Anggota': 1,
+                'pengurus': 2,
+                'anggota': 1,
             },
         }
         
@@ -109,7 +109,6 @@ class Pembobotan():
         #     ["INVFEST 6.0 Juara 1", 2],
         #     ["Programming Competition", 2],
         # ]
-        print( ">>>>>>>>>>>>>>>>>>>>>", list_prestasi, "<<<<<<<<<<<<<<<<<<")
         count_prestasi = 0
         for prestasi in list_prestasi:
             count_prestasi += int(prestasi[1])
@@ -122,8 +121,6 @@ class PredictModel():
         mahasiswa = Mahasiswa.query.filter_by(nim=nim).first()
         x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
 
-
-        print("======================", x_pred['pekerjaan_ortu'][0], "===============")
         if x_pred['pekerjaan_ortu'][0] not in ['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns']:
              x_pred['pekerjaan_ortu'] = 2
         else:
@@ -136,6 +133,7 @@ class PredictModel():
         return [0 if res == 'Tidak Relevan' else 1, round(predictions.tolist()[0][0], 2) * 100]
 
     def predict_multiple(nims):
+        # pembobotan multiple tidak digunakan kembali [DEPRECATED]
         # load model
         model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
         results = []
@@ -147,7 +145,10 @@ class PredictModel():
                 # prepare the data
                 # gender = "L" if mahasiswa.gender else "P" 
                 x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
-                x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
+                if x_pred['pekerjaan_ortu'][0] not in ['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns']:
+                    x_pred['pekerjaan_ortu'] = 2
+                else:
+                    x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
                             [1, 2, 2, 2, 3], inplace=True)
                 # predict
                 res = model.predict(x_pred)[0]

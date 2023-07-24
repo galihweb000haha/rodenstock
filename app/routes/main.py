@@ -559,6 +559,7 @@ def input_batch():
         penghasilan_ortu = row['penghasilan_ortu']
         pekerjaan_ortu = row['pekerjaan_ortu']
         tahun_akademik = row['tahun_akademik']
+        prodi = row['prodi']
 
         nama_prestasi = row['nama_prestasi'] if row['nama_prestasi'] == row['nama_prestasi']  else False 
         tingkat_prestasi = row['tingkat_prestasi'] if row['tingkat_prestasi'] == row['tingkat_prestasi'] else False
@@ -578,9 +579,10 @@ def input_batch():
                 if penghasilan_ortu: current_mahasiswa.parents_income = penghasilan_ortu
                 if pekerjaan_ortu: current_mahasiswa.pekerjaan_ortu = pekerjaan_ortu
                 if tahun_akademik: current_mahasiswa.batch_year = tahun_akademik
+                if prodi: current_mahasiswa.prodi = prodi
                 db.session.commit()
             else :
-                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu, batch_year=tahun_akademik)
+                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu, batch_year=tahun_akademik, prodi=prodi)
                 db.session.add(mhs)
                 db.session.commit()
 
