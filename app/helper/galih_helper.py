@@ -117,7 +117,7 @@ class Pembobotan():
 
 class PredictModel():
     def predict(nim):
-        model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
+        model = load_model("/Users/dsn/Documents/rodenstock/app/model/best.pkl")
         mahasiswa = Mahasiswa.query.filter_by(nim=nim).first()
         x_pred = pd.DataFrame([[mahasiswa.gender, mahasiswa.pekerjaan_ortu, mahasiswa.parents_income, mahasiswa.gpa_score, mahasiswa.sertifikat, mahasiswa.prestasi, mahasiswa.organisasi]], columns=["jk", "pekerjaan_ortu", "penghasilan_ortu", "ipk", "sertifikasi", "prestasi", "organisasi"])
 
@@ -135,7 +135,7 @@ class PredictModel():
     def predict_multiple(nims):
         # pembobotan multiple tidak digunakan kembali [DEPRECATED]
         # load model
-        model = load_model("D:/galih_ta/rodenstock/app/model/best.pkl")
+        model = load_model("/Users/dsn/Documents/rodenstock/app/model/best.pkl")
         results = []
         # search student by nim
         for nim in nims:
@@ -150,6 +150,7 @@ class PredictModel():
                 else:
                     x_pred['pekerjaan_ortu'].replace(['buruh', 'wiraswasta', 'pegawai swasta', 'swasta', 'pns'],
                             [1, 2, 2, 2, 3], inplace=True)
+                
                 # predict
                 res = model.predict(x_pred)[0]
                 data_result = {

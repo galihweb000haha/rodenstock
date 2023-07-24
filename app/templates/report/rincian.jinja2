@@ -47,12 +47,15 @@
                             <div class="col-4">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">IPK</li>
-                                    <li class="list-group-item">Pencapaian Prestasi</li>
+                                    {% if informasi_tambahan.prestasi %}
+                                        <li class="list-group-item">Pencapaian Prestasi</li>
+                                    {% endif %}
                                 </ul>
                             </div>
                             <div class="col-8">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">{{mhs.gpa_score}}</li>
+                                    {% if informasi_tambahan.prestasi %}
                                     <li class="list-group-item">
                                         <ol>
                                             {% for pres in informasi_tambahan.prestasi %}
@@ -68,6 +71,7 @@
                                             {% endfor %}
                                         </ol>
                                     </li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -78,6 +82,7 @@
                 <div class="d-flex align-items-end row">
                     <div class="card-body">
                         <h6 class="card-title mb-1 text-nowrap">Data Aktivitas & Organisasi</h6>
+                        {% if informasi_tambahan.organisasi %}
                         <ol>
                             <li>
                                 <div class="row">
@@ -104,6 +109,7 @@
                                 </div>
                             </li>
                         </ol>
+                        {% endif %}
                     </div>
                 </div>
             </div>

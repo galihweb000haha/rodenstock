@@ -78,19 +78,25 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
-@main_bp.route("/basic_input/<string:nim>", methods=["GET"])
+@main_bp.route("/basic_input/<string:nim>/<string:prodi>", methods=["GET"])
 @login_required
-def basic_input_mhs(nim):
+def basic_input_mhs(nim, prodi):
     """Input Students Data"""
     form = MahasiswaForm()
 
+    
     if current_user.level == 1:
         selection_by_user = galih_helper.Api.getMhsFilterBySmt()
     else:
-        admin = AdminProdi.query.filter_by(user_id=current_user.i).first()
+        admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
         selection_by_user = galih_helper.Api.getMhsFilterByProdiandSmt(admin.kode_prodi)
+
+        if prodi != admin.kode_prodi:
+            flash("Anda tidak memiliki akses ke mahasiswa dengan prodi tersebut!", 'danger')
+            return redirect(request.referrer)
+
         
-    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] ) for t in selection_by_user['data']]
+    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] + '-' + t['prodi']) for t in selection_by_user['data']]
     list_selection.insert(0, (None, '-- Pilih Mahasiswa --')) 
     form.nim.choices = list_selection
     form.nim.default = nim
@@ -136,7 +142,7 @@ def basic_input():
         admin = AdminProdi.query.filter_by(user_id=current_user.id).first()
         selection_by_user = galih_helper.Api.getMhsFilterByProdiandSmt(admin.kode_prodi)
         
-    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] ) for t in selection_by_user['data']]
+    list_selection = [(t['nim'], str(t['nim']) + '-' + t['nama_lengkap'] + '-' + t['prodi']) for t in selection_by_user['data']]
     list_selection.insert(0, (None, '-- Pilih Mahasiswa --')) 
     form.nim.choices = list_selection
 
@@ -321,6 +327,18 @@ def data_master_mhs(prodi, thak):
         thak = ''
     
     mahasiswa = galih_helper.Api.getAllMhsFilterByProdiandThak(prodi, thak)
+
+    # convert to array
+    mahasiswa_nim_filled = Mahasiswa.query.with_entities(Mahasiswa.nim).all() 
+    mahasiswa_nim_filled_arr = []
+    for nim in mahasiswa_nim_filled:
+        mahasiswa_nim_filled_arr.append(nim[0])
+
+    for mhs in mahasiswa['data']:
+        if mhs['nim'] in mahasiswa_nim_filled_arr:
+            mhs['keterangan'] = "Terisi"
+        else:
+            mhs['keterangan'] = "Belum terisi"
     
     # provide default value
     if prodi:
@@ -514,20 +532,25 @@ def input_data():
     # Masukkin achievement ke database
     # 1. prestasi
     for index, value in enumerate(list_prestasi):
-        prestasi_store = Prestasi(mahasiswa_id=data_mhs.id, nama_prestasi=nama_prestasi[index], jenis_prestasi=value)
-        db.session.add(prestasi_store)
-        db.session.commit()
+        if int(value) > 0:
+            prestasi_store = Prestasi(mahasiswa_id=data_mhs.id, nama_prestasi=nama_prestasi[index], jenis_prestasi=value)
+            data_mhs.prestasi = prestasi
+            db.session.add(prestasi_store)
+            db.session.commit()
     # 2. organisasi
     for index, value in enumerate(list_organisasi):
-        organisasi_store = Organisasi(mahasiswa_id=data_mhs.id, nama_organisasi=nama_organisasi[index], peran_organisasi=value)
-        db.session.add(organisasi_store)
-        db.session.commit()
+        if int(value) > 0:
+            organisasi_store = Organisasi(mahasiswa_id=data_mhs.id, nama_organisasi=nama_organisasi[index], peran_organisasi=value)
+            data_mhs.organisasi = organisasi
+            db.session.add(organisasi_store)
+            db.session.commit()
     # 3. Sertifikat
     for index, value in enumerate(list_sertifikat):
-        sertifikat_store = Sertifikat(mahasiswa_id=data_mhs.id, nama_sertifikat=nama_sertifikat[index], jenis_sertifikat=value)
-        db.session.add(sertifikat_store)
-        db.session.commit()
-    
+        if int(value) > 0:
+            sertifikat_store = Sertifikat(mahasiswa_id=data_mhs.id, nama_sertifikat=nama_sertifikat[index], jenis_sertifikat=value)
+            data_mhs.sertifikat = sertifikat
+            db.session.add(sertifikat_store)
+            db.session.commit()
 
     # predict relevance
     res = galih_helper.PredictModel.predict(nim)
@@ -560,6 +583,7 @@ def input_batch():
         pekerjaan_ortu = row['pekerjaan_ortu']
         tahun_akademik = row['tahun_akademik']
         prodi = row['prodi']
+        semester = row['semester']
 
         nama_prestasi = row['nama_prestasi'] if row['nama_prestasi'] == row['nama_prestasi']  else False 
         tingkat_prestasi = row['tingkat_prestasi'] if row['tingkat_prestasi'] == row['tingkat_prestasi'] else False
@@ -578,11 +602,13 @@ def input_batch():
                 if jk: current_mahasiswa.gender = jk
                 if penghasilan_ortu: current_mahasiswa.parents_income = penghasilan_ortu
                 if pekerjaan_ortu: current_mahasiswa.pekerjaan_ortu = pekerjaan_ortu
-                if tahun_akademik: current_mahasiswa.batch_year = tahun_akademik
-                if prodi: current_mahasiswa.prodi = prodi
+                if tahun_akademik: current_mahasiswa.batch_year = '2019'
+                if prodi: current_mahasiswa.prodi = '04'
+                if semester: current_mahasiswa.semester = semester
+                
                 db.session.commit()
             else :
-                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu, batch_year=tahun_akademik, prodi=prodi)
+                mhs = Mahasiswa(nim=nim, gender=jk, gpa_score=ipk, name=nama, parents_income=penghasilan_ortu, pekerjaan_ortu=pekerjaan_ortu, semester=semester, batch_year='2019', prodi='09', state='A')
                 db.session.add(mhs)
                 db.session.commit()
 
@@ -703,6 +729,11 @@ def manual_book():
     file_path = 'static/src/ManualBook.pdf'
     return send_file(file_path, as_attachment=True)
 
+
+@main_bp.route('/excel/download')
+def download_format():
+    path = '../upload/format.xlsx'
+    return send_file(path, as_attachment=True)
 
 @main_bp.app_errorhandler(404)
 def handle_404(err):

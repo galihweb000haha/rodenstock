@@ -291,8 +291,9 @@
             $('#button-single-import').removeClass('active')
         })
         $('.nim').change(function() {
-
-            document.location.href = '/basic_input/' + $('#select2-nim-container').text().split('-')[0]
+            nim = $('#select2-nim-container').text().split('-')[0]
+            prodi = $('#select2-nim-container').text().split('-')[2]    
+            document.location.href = '/basic_input/' + nim + '/' + prodi
 
             // $.get('/get_mhs?nim='+$('#select2-nim-container').text(), function(data) {
             //     $.each( data['data'], function( key, value ) {
