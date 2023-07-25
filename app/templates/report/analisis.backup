@@ -1,0 +1,198 @@
+<div class="card">
+        <div class="row row-bordered g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3" title="Analisis deskriptif adalah metode untuk menggambarkan data secara ringkas dan jelas. Ini melibatkan penghitungan statistik dasar seperti rata-rata, median, dan variasi, serta pembuatan grafik untuk memvisualisasikan pola dan tren dalam data.">Analisis Deskriptif &#9432;</h5>
+                    <div class="container">
+                        <div class="row">
+                            <h6 class="mt-3">Fitur Numerik</h6>
+                            <div class="table-responsive text-nowrap">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Attribute</th>
+                                            <th>Count</th>
+                                            <th>Mean</th>
+                                            <th>Std</th>
+                                            <th>Min</th>
+                                            <th>25%</th>
+                                            <th>50%</th>
+                                            <th>75%</th>
+                                            <th>Max</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>IPK</td>
+                                            <td>21</td>
+                                            <td>3.4</td>
+                                            <td>3</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jumlah Prestasi</td>
+                                            <td>21</td>
+                                            <td>3.4</td>
+                                            <td>3</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h6 class="mt-3">Fitur Kategorikal</h6>
+                            <div class="table-responsive text-nowrap">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Attribute</th>
+                                            <th>Count</th>
+                                            <th>Mean</th>
+                                            <th>Std</th>
+                                            <th>Min</th>
+                                            <th>25%</th>
+                                            <th>50%</th>
+                                            <th>75%</th>
+                                            <th>Max</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Pekerjaan Orang Tua</td>
+                                            <td>21</td>
+                                            <td>3.4</td>
+                                            <td>3</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jenis Kelamin</td>
+                                            <td>21</td>
+                                            <td>3.4</td>
+                                            <td>3</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row row-bordered g-0">
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3" title="Feature importance adalah metode untuk mengukur sejauh mana setiap fitur berkontribusi terhadap hasil atau prediksi model. Hal ini membantu kita mengidentifikasi fitur-fitur yang memiliki pengaruh paling signifikan dalam analisis data.">Tingkat Faktor Penting &#9432;</h5>
+                    <div class="container">
+                        <div class="row">
+                            <img src="{{ url_for('static', filename='img/analytics/feature_importance.png') }}" />
+                        </div>
+                    </div>
+                </div>                            
+            </div>
+            <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3">Analisis Hasil Prediksi</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="text-light small fw-semibold mb-1">Total Tingkat Relevansi</div>
+                            <div class="progress mb-3 p-0">
+                                <div
+                                class="progress-bar bg-success shadow-none"
+                                role="progressbar"
+                                style="width: {{relevan_percentage}}%"
+                                aria-valuenow="{{relevan_percentage}}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                >{{relevan_percentage}}%</div>
+                                <div
+                                class="progress-bar bg-danger shadow-none"
+                                role="progressbar"
+                                style="width: {{tidak_relevan_percentage}}%"
+                                aria-valuenow="{{tidak_relevan_percentage}}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                >{{tidak_relevan_percentage}}%</div>
+                            </div>
+                        </div>
+                        <a href="javascript:;" class="btn btn-sm btn-outline-primary">Lihat Selengkapnya</a>
+                        <hr/>
+                        <div class="row">
+                            <h5 class="mt-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Analisis Multivariat &#9432;</h5>
+                            <div class="col-md-12">
+                                <img src="{{ url_for('static', filename='img/analytics/korelasi_ipk_dan_relevansi.png') }}" width="100%" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        <div class="row row-bordered g-0">
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3" title="Matriks korelasi adalah sebuah tabel yang menggambarkan hubungan antara dua atau lebih variabel. Tabel ini berbentuk persegi dan setiap sel di dalamnya berisi koefisien korelasi antara pasangan variabel yang bersesuaian. Koefisien korelasi mengukur sejauh mana hubungan linier antara variabel-variabel tersebut, dengan nilai berkisar antara -1 hingga 1. Nilai positif menunjukkan hubungan positif, nilai negatif menunjukkan hubungan negatif, dan nilai nol menunjukkan tidak adanya hubungan linier antara variabel tersebut. Matriks korelasi digunakan untuk memahami pola keterkaitan antara variabel-variabel dalam dataset, membantu dalam analisis statistik, serta mendukung pengambilan keputusan berdasarkan hubungan antarvariabel yang ditemukan.">Matriks Korelasi &#9432;</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="{{ url_for('static', filename='img/analytics/matriks_korelasi.png') }}" width="100%" />
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="col-md-4">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="{{ url_for('static', filename='img/analytics/presentasi_jenis_kelamin.png') }}" width="100%" />
+                            </div>
+                            <div class="col-md-12">
+                                <img src="{{ url_for('static', filename='img/analytics/korelasi_ipk_dan_prestasi.png') }}" width="100%" />
+                            </div>
+                            <div class="col-md-12">
+                                <img src="{{ url_for('static', filename='img/analytics/distribusi_kelas.png') }}" width="100%" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-bordered g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Matriks Korelasi &#9432;</h5>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                            <div id="chart_jenis_kelamin"></div>
+                            </div>
+                            <div class="col-md-6">
+                            <div id="chart_pekerjaan_ortu"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>

@@ -84,6 +84,7 @@
                         <h6 class="card-title mb-1 text-nowrap">Data Aktivitas & Organisasi</h6>
                         {% if informasi_tambahan.organisasi %}
                         <ol>
+                            {% for org in informasi_tambahan.organisasi %}
                             <li>
                                 <div class="row">
                                     <div class="col-5">
@@ -93,7 +94,6 @@
                                         </ul>
                                     </div>
                                     <div class="col-7">
-                                        {% for org in informasi_tambahan.organisasi %}
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">{{org.nama_organisasi}}</li>
                                             <li class="list-group-item">
@@ -104,10 +104,10 @@
                                             {% endif %}
                                             </li>
                                         </ul>
-                                        {% endfor %}
                                     </div>
                                 </div>
                             </li>
+                            {% endfor %}
                         </ol>
                         {% endif %}
                     </div>

@@ -1,6 +1,7 @@
 {% extends "layout_dashboard.jinja2" %}
 {% block pagestyles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/select2.min.css') }}" class="template-customizer-core-css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/datatables.css') }}" class="template-customizer-core-css" />
 {% endblock %}
 {% block content %}
 <!-- Basic Bootstrap Table -->
@@ -22,8 +23,8 @@
                     <h5 class="mb-0">Program Studi</h5>
                     <button type="button" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#modalCenter">Tambah prodi</button>
                 </div>
-                <div class="table-responsive text-nowrap">
-                    <table class="table">
+                <div class="table-responsive text-nowrap container">
+                    <table class="table dttbl-prodi">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -114,6 +115,7 @@
     {% block additionalscripts %}
         <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
         <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/js/datatables.js') }}"></script>
 
         <script>
             $(document).ready(function() {
@@ -123,6 +125,10 @@
                 $('#search_menu').on('change', function() {
                     document.location.href = $(this).val()
                 })
+                $('.dttbl-prodi').DataTable().destroy();
+                let datatable = $('.dttbl-prodi').DataTable(
+                    {"paging": true}
+                );
             });
         </script>
     {% endblock %}

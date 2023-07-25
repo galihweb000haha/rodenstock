@@ -688,6 +688,9 @@ def input_batch():
         start_nim = None
     
 
+    flash("Penambahan data berhasil dilakukan!", 'success')
+    return redirect(url_for("main_bp.basic_input"))
+    
     form = MahasiswaForm()
     nim = request.args.get('nim')
     mahasiswa = [] if not nim  else Mahasiswa.query.filter_by(nim=nim).first()
