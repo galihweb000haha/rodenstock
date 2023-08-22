@@ -1,14 +1,12 @@
 //======================HASIL PREDIKSI=========================//
+el = document.querySelector(".chart_hasil_prediksi_relevansi")
 var options = {
     series: [{
-    name: 'PRODUCT A',
-    data: [44, 55, 41, 67, 22, 43, 21, 49]
+    name: 'Relevan',
+    data: JSON.parse(el.dataset.data_hasil_prediksi)[0]
   }, {
-    name: 'PRODUCT B',
-    data: [13, 23, 20, 8, 13, 27, 33, 12]
-  }, {
-    name: 'PRODUCT C',
-    data: [11, 17, 15, 15, 21, 14, 15, 13]
+    name: 'Tidak Relevan',
+    data: JSON.parse(el.dataset.data_hasil_prediksi)[1]
   }],
     chart: {
     type: 'bar',
@@ -27,8 +25,7 @@ var options = {
     }
   }],
   xaxis: {
-    categories: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2',
-      '2012 Q3', '2012 Q4'
+    categories: ['2023',
     ],
   },
   fill: {
@@ -41,21 +38,22 @@ var options = {
   },
   };
 
-  var chart = new ApexCharts(document.querySelector(".chart_hasil_prediksi_relevansi"), options);
+  var chart = new ApexCharts(el, options);
   chart.render();
 //======================PRESTASI THD PREDIKSI=========================//
+var el = document.querySelector(".chart_korelasi_prestasi_terhadap_prediksi")
 var options = {
     series: [
     {
       type: 'boxPlot',
       data: [
         {
-          x: 'Jan 2015',
-          y: [54, 66, 69, 75, 88]
+          x: 'Relevan',
+          y: JSON.parse(el.dataset.prestasi_relevan),
         },
         {
-          x: 'Jan 2016',
-          y: [43, 65, 69, 76, 81]
+          x: 'Tidak Relevan',
+          y: JSON.parse(el.dataset.prestasi_tidak_relevan),
         },
       ]
     }
@@ -63,10 +61,6 @@ var options = {
     chart: {
     type: 'boxPlot',
     height: 350
-  },
-  title: {
-    text: 'Basic BoxPlot Chart',
-    align: 'left'
   },
   plotOptions: {
     boxPlot: {
@@ -78,21 +72,22 @@ var options = {
   }
   };
 
-  var chart = new ApexCharts(document.querySelector(".chart_korelasi_prestasi_terhadap_prediksi"), options);
+  var chart = new ApexCharts(el, options);
   chart.render();
 //======================PRESTASI THD ORGANISASI=========================//
+var el = document.querySelector(".chart_korelasi_organisasi_terhadap_prediksi")
 var options = {
     series: [
     {
       type: 'boxPlot',
       data: [
         {
-          x: 'Jan 2015',
-          y: [54, 66, 69, 75, 88]
+          x: 'Relevan',
+          y: JSON.parse(el.dataset.organisasi_relevan),
         },
         {
-          x: 'Jan 2016',
-          y: [43, 65, 69, 76, 81]
+          x: 'Tidak Relevan',
+          y: JSON.parse(el.dataset.organisasi_tidak_relevan),
         },
       ]
     }
@@ -100,10 +95,6 @@ var options = {
     chart: {
     type: 'boxPlot',
     height: 350
-  },
-  title: {
-    text: 'Basic BoxPlot Chart',
-    align: 'left'
   },
   plotOptions: {
     boxPlot: {
@@ -115,21 +106,22 @@ var options = {
   }
   };
 
-  var chart = new ApexCharts(document.querySelector(".chart_korelasi_organisasi_terhadap_prediksi"), options);
+  var chart = new ApexCharts(el, options);
   chart.render();
 //======================PRESTASI THD SERTIFIKAT=========================//
+el = document.querySelector(".chart_korelasi_sertifikat_terhadap_prediksi")
 var options = {
     series: [
     {
       type: 'boxPlot',
       data: [
         {
-          x: 'Jan 2015',
-          y: [54, 66, 69, 75, 88]
+          x: 'Relevan',
+          y: JSON.parse(el.dataset.sertifikat_relevan),
         },
         {
-          x: 'Jan 2016',
-          y: [43, 65, 69, 76, 81]
+          x: 'Tidak Relevan',
+          y: JSON.parse(el.dataset.sertifikat_tidak_relevan),
         },
       ]
     }
@@ -137,10 +129,6 @@ var options = {
     chart: {
     type: 'boxPlot',
     height: 350
-  },
-  title: {
-    text: 'Basic BoxPlot Chart',
-    align: 'left'
   },
   plotOptions: {
     boxPlot: {
@@ -152,12 +140,13 @@ var options = {
   }
   };
 
-  var chart = new ApexCharts(document.querySelector(".chart_korelasi_sertifikat_terhadap_prediksi"), options);
+  var chart = new ApexCharts(el, options);
   chart.render();
 
 //======================JENIS KELAMIN=========================//
+el = document.querySelector(".chart_distribusi_jenis_kelamin")
 var options = {
-    series: [45, 55],
+    series: JSON.parse(el.dataset.ammount_gender),
     chart: {
     width: 380,
     type: 'pie',
@@ -176,12 +165,13 @@ options: {
 }]
 };
 
-var chart = new ApexCharts(document.querySelector(".chart_distribusi_jenis_kelamin"), options);
+var chart = new ApexCharts(el, options);
 chart.render();
 
 //======================PEKERJAAN ORTU=========================//
+el = document.querySelector(".chart_distribusi_pekerjaan")
 var options = {
-    series: [44, 55, 13, 43, 22],
+    series: JSON.parse(el.dataset.pekerjaan_ortu),
     chart: {
     width: 380,
     type: 'pie',
@@ -200,93 +190,213 @@ options: {
 }]
 };
 
-var chart = new ApexCharts(document.querySelector(".chart_distribusi_pekerjaan"), options);
+var chart = new ApexCharts(el, options);
 chart.render();
 
 
 //======================PENGHASILAN ORTU=========================//
+el = document.querySelector(".chart_distribusi_penghasilan_ortu")
 var options = {
-    series: [{
-    name: 'Inflation',
-    data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
-  }],
-    chart: {
-    height: 350,
-    type: 'bar',
+  series: [{
+  name: 'Jml',
+  data: JSON.parse(el.dataset.penghasilan_ortu)
+}],
+  chart: {
+  height: 350,
+  type: 'bar',
+},
+plotOptions: {
+  bar: {
+    borderRadius: 10,
+    dataLabels: {
+      position: 'top', // top, center, bottom
+    },
+  }
+},
+dataLabels: {
+  enabled: true,
+  formatter: function (val) {
+    return val;
   },
-  plotOptions: {
-    bar: {
-      borderRadius: 10,
-      dataLabels: {
-        position: 'top', // top, center, bottom
-      },
+  offsetY: -20,
+  style: {
+    fontSize: '12px',
+    colors: ["#304758"]
+  }
+},
+
+xaxis: {
+  categories: [
+      "< 1 JT",
+      "1-2JT",
+      "2-3JT",
+      "3-4JT",
+      "4-5JT",
+      ">5JT",
+  ],
+  position: 'top',
+  axisBorder: {
+    show: false
+  },
+  axisTicks: {
+    show: false
+  },
+  crosshairs: {
+    fill: {
+      type: 'gradient',
+      gradient: {
+        colorFrom: '#D8E3F0',
+        colorTo: '#BED1E6',
+        stops: [0, 100],
+        opacityFrom: 0.4,
+        opacityTo: 0.5,
+      }
     }
   },
-  dataLabels: {
+  tooltip: {
     enabled: true,
+  }
+},
+yaxis: {
+  axisBorder: {
+    show: false
+  },
+  axisTicks: {
+    show: false,
+  },
+  labels: {
+    show: false,
     formatter: function (val) {
       return val + "%";
-    },
-    offsetY: -20,
-    style: {
-      fontSize: '12px',
-      colors: ["#304758"]
-    }
-  },
-  
-  xaxis: {
-    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    position: 'top',
-    axisBorder: {
-      show: false
-    },
-    axisTicks: {
-      show: false
-    },
-    crosshairs: {
-      fill: {
-        type: 'gradient',
-        gradient: {
-          colorFrom: '#D8E3F0',
-          colorTo: '#BED1E6',
-          stops: [0, 100],
-          opacityFrom: 0.4,
-          opacityTo: 0.5,
-        }
-      }
-    },
-    tooltip: {
-      enabled: true,
-    }
-  },
-  yaxis: {
-    axisBorder: {
-      show: false
-    },
-    axisTicks: {
-      show: false,
-    },
-    labels: {
-      show: false,
-      formatter: function (val) {
-        return val + "%";
-      }
-    }
-  
-  },
-  title: {
-    text: 'Monthly Inflation in Argentina, 2002',
-    floating: true,
-    offsetY: 330,
-    align: 'center',
-    style: {
-      color: '#444'
     }
   }
-  };
 
-  var chart = new ApexCharts(document.querySelector(".chart_distribusi_penghasilan_ortu"), options);
-  chart.render();
+},
+};
 
-//======================ANALISIS DESKRIPTIF=========================//
+var chart = new ApexCharts(el, options);
+chart.render();
+//======================// SCATTER PRESTASI=========================//
 
+el = document.querySelector(".chart_sactter_prestasi")
+var options = {
+  series: [{
+  name: "Relevan",
+  data: JSON.parse(el.dataset.scatter_prestasi_relevan)
+},{
+  name: "Tidak Relevan",
+  data: JSON.parse(el.dataset.scatter_prestasi_tidak_relevan)
+}],
+  chart: {
+  height: 350,
+  type: 'scatter',
+  zoom: {
+    enabled: true,
+    type: 'xy'
+  }
+},
+xaxis: {
+  tickAmount: 10,
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) 
+    }
+  }
+},
+yaxis: {
+  show: false,
+  tickAmount: 7, 
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) + "%"
+    }
+  },
+
+}
+
+};
+
+var chart = new ApexCharts(el, options);
+chart.render();
+// SCATTER ORGANISASI
+el = document.querySelector(".chart_sactter_organisasi")
+var options = {
+  series: [{
+  name: "Relevan",
+  data: JSON.parse(el.dataset.scatter_organisasi_relevan)
+},{
+  name: "Tidak Relevan",
+  data: JSON.parse(el.dataset.scatter_organisasi_tidak_relevan)
+}],
+  chart: {
+  height: 350,
+  type: 'scatter',
+  zoom: {
+    enabled: true,
+    type: 'xy'
+  }
+},
+xaxis: {
+  tickAmount: 10,
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) 
+    }
+  }
+},
+yaxis: {
+  show: false,
+  tickAmount: 7, 
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) + "%"
+    }
+  },
+
+}
+
+};
+
+var chart = new ApexCharts(el, options);
+chart.render();
+// SCATTER SERTIFIKAT
+el = document.querySelector(".chart_sactter_sertifikat")
+var options = {
+  series: [{
+  name: "Relevan",
+  data: JSON.parse(el.dataset.scatter_sertifikat_relevan)
+},{
+  name: "Tidak Relevan",
+  data: JSON.parse(el.dataset.scatter_sertifikat_tidak_relevan)
+}],
+  chart: {
+  height: 350,
+  type: 'scatter',
+  zoom: {
+    enabled: true,
+    type: 'xy'
+  }
+},
+xaxis: {
+  tickAmount: 10,
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) 
+    }
+  }
+},
+yaxis: {
+  show: false,
+  tickAmount: 7, 
+  labels: {
+    formatter: function(val) {
+      return parseFloat(val).toFixed(1) + "%"
+    }
+  },
+
+}
+
+};
+
+var chart = new ApexCharts(el, options);
+chart.render();

@@ -3,8 +3,10 @@ from flask_login import current_user
 
 from flask import request, jsonify
 import requests
-from app.models import Mahasiswa, Prodi
+from app.models import Mahasiswa, Prodi, Prestasi, Organisasi, Sertifikat
+
 import pandas as pd
+import numpy as np
 
 from jcopml.utils import load_model
 
@@ -184,6 +186,29 @@ class Utility():
             nominal_str = "Rp" + nominal_str
 
         return nominal_str
-
-
     
+    def obj_to_arr(obj):
+        list = []
+        for i in obj:
+            list.append(i[0])
+        return list
+
+
+class Analisis():
+    def calculate_boxplot(data):
+        if data:
+            # korelasi prestasi dengan prediksi
+            q1 = np.percentile(data, 25)
+            q2 = np.percentile(data, 50)
+            q3 = np.percentile(data, 75)
+
+            # IQR adalah perbedaan antara Q3 dan Q1, yaitu IQR = Q3 - Q1.
+            IQR = q3 - q1
+
+            # Pencilan atau outliers adalah data yang berada di luar rentang Q1 - 1,5 * IQR hingga Q3 + 1,5 * IQR. Data di luar rentang ini akan ditandai sebagai pencilan pada boxplot
+            wishker_top = q1 - 1.5 * IQR
+            wishker_bottom = q3 + 1.5 * IQR
+
+            return [wishker_top, q1, q2, q3, wishker_bottom]
+        else:
+            return [0,0,0,0,0]

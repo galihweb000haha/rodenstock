@@ -4,7 +4,8 @@ from flask_login import current_user, login_required, logout_user
 # from openpyxl import Workbook
 # from io import BytesIO
 from datetime import datetime
-
+import statistics
+import numpy as np
 import sys, requests, pandas, math, re
 
 # setting path
@@ -709,10 +710,168 @@ def input_batch():
 @main_bp.route("/analisis", methods=["GET"])
 @login_required
 def analisis():
+    relevan = Mahasiswa.query.filter_by(relevan=1).all()
+    tidak_relevan = Mahasiswa.query.filter_by(relevan=0).all()
+    count_all = len(relevan) + len(tidak_relevan)
+    percentage_relevan = len(relevan) * 100 / count_all
+    percentage_tidak_relevan = len(tidak_relevan) * 100 / count_all
+    data_hasil_prediksi = [[percentage_relevan], [percentage_tidak_relevan]]
+
+    prediksi = Mahasiswa.query.with_entities(Mahasiswa.predict_proba).all()
+    prediksi = galih_helper.Utility.obj_to_arr(prediksi)
+    # data_boxplot_prediksi = galih_helper.Analisis.calculate_boxplot(prediksi)
+
+    data_mhs = Mahasiswa.query.all()
+    prestasi_relevan = []
+    prestasi_tidak_relevan = []
+    sertifikat_relevan = []
+    sertifikat_tidak_relevan = []
+    organisasi_relevan = []
+    organisasi_tidak_relevan = []
+    prestasi = []
+    sertifikat = []
+    organisasi = []
+
+    scatter_prestasi_relevan = []
+    scatter_prestasi_tidak_relevan = []
+    scatter_organisasi_relevan = []
+    scatter_organisasi_tidak_relevan = []
+    scatter_sertifikat_relevan = []
+    scatter_sertifikat_tidak_relevan = []
+
+    for data in data_mhs:
+        prestasi.append(data.prestasi)
+        sertifikat.append(data.sertifikat)
+        organisasi.append(data.organisasi)
+        if data.relevan == 1:
+            prestasi_relevan.append(data.prestasi)
+            sertifikat_relevan.append(data.sertifikat)
+            organisasi_relevan.append(data.organisasi)
+            scatter_prestasi_relevan.append([data.prestasi, data.predict_proba])
+            scatter_organisasi_relevan.append([data.organisasi, data.predict_proba])
+            scatter_sertifikat_relevan.append([data.organisasi, data.predict_proba])
+        else:
+            prestasi_tidak_relevan.append(data.prestasi)
+            sertifikat_tidak_relevan.append(data.sertifikat)
+            organisasi_tidak_relevan.append(data.organisasi)
+            scatter_prestasi_tidak_relevan.append([data.prestasi, data.predict_proba])
+            scatter_organisasi_tidak_relevan.append([data.organisasi, data.predict_proba])
+            scatter_sertifikat_tidak_relevan.append([data.sertifikat, data.predict_proba])
+
+
+    
+
+    data_boxplot = {
+        'prestasi_relevan': [min(prestasi_relevan),np.percentile(prestasi_relevan, 25),np.percentile(prestasi_relevan, 50),np.percentile(prestasi_relevan, 75), max(prestasi_relevan)],
+        'prestasi_tidak_relevan':  [min(prestasi_tidak_relevan),np.percentile(prestasi_tidak_relevan, 25),np.percentile(prestasi_tidak_relevan, 50),np.percentile(prestasi_tidak_relevan, 75), max(prestasi_tidak_relevan)],
+        'sertifikat_relevan': [min(sertifikat_relevan),np.percentile(sertifikat_relevan, 25),np.percentile(sertifikat_relevan, 50),np.percentile(sertifikat_relevan, 75), max(sertifikat_relevan)],
+        'sertifikat_tidak_relevan': [min(sertifikat_tidak_relevan),np.percentile(sertifikat_tidak_relevan, 25),np.percentile(sertifikat_tidak_relevan, 50),np.percentile(sertifikat_tidak_relevan, 75), max(sertifikat_tidak_relevan)],
+        'organisasi_relevan': [min(organisasi_relevan),np.percentile(organisasi_relevan, 25),np.percentile(organisasi_relevan, 50),np.percentile(organisasi_relevan, 75), max(organisasi_relevan)],
+        'organisasi_tidak_relevan': [min(organisasi_tidak_relevan),np.percentile(organisasi_tidak_relevan, 25),np.percentile(organisasi_tidak_relevan, 50),np.percentile(organisasi_tidak_relevan, 75), max(organisasi_tidak_relevan)],
+    }
+
+    male = Mahasiswa.query.filter_by(gender=1).with_entities(Mahasiswa.gender).all()
+    female = Mahasiswa.query.filter_by(gender=0).with_entities(Mahasiswa.gender).all()
+    ammount_gender = [len(male), len(female)]
+
+    buruh = Mahasiswa.query.filter_by(pekerjaan_ortu='buruh').all()
+    swasta = Mahasiswa.query.filter_by(pekerjaan_ortu='swasta').all()
+    wiraswasta =Mahasiswa.query.filter_by(pekerjaan_ortu='wiraswasta').all()
+    pekerja_lepas = Mahasiswa.query.filter_by(pekerjaan_ortu='pekerja_lepas').all()
+    pns = Mahasiswa.query.filter_by(pekerjaan_ortu='pns').all()
+    pekerja_ortu = [len(buruh), len(swasta), len(wiraswasta), len(pekerja_lepas), len(pns)]
+    
+    cluster_1 = len(Mahasiswa.query.filter(Mahasiswa.parents_income >= 0, Mahasiswa.parents_income <= 1000000).all())
+    cluster_2 = len(Mahasiswa.query.filter(Mahasiswa.parents_income > 1000000, Mahasiswa.parents_income <= 2000000).all())
+    cluster_3 = len(Mahasiswa.query.filter(Mahasiswa.parents_income > 2000000, Mahasiswa.parents_income <= 3000000).all())
+    cluster_4 = len(Mahasiswa.query.filter(Mahasiswa.parents_income > 3000000, Mahasiswa.parents_income <= 4000000).all())
+    cluster_5 = len(Mahasiswa.query.filter(Mahasiswa.parents_income > 4000000, Mahasiswa.parents_income <= 5000000).all())
+    cluster_6 = len(Mahasiswa.query.filter(Mahasiswa.parents_income > 5000000).all())
+    penghasilan_ortu = [cluster_1, cluster_2, cluster_3, cluster_4, cluster_5, cluster_6]
+
+    ipk = Mahasiswa.query.with_entities(Mahasiswa.gpa_score).all()
+    statistic_ipk = galih_helper.Utility.obj_to_arr(ipk)
+    statistic_penghasilan_ortu = galih_helper.Utility.obj_to_arr(Mahasiswa.query.with_entities(Mahasiswa.parents_income).all())
+
+
+    analisis_deskriptif = [
+        {
+            'attribute': 'IPK',
+            'count': len(statistic_ipk),
+            'mean': statistics.mean(statistic_ipk),
+            'std': statistics.stdev(statistic_ipk),
+            'min': min(statistic_ipk),
+            'q1': np.percentile(statistic_ipk, 25),
+            'q2': np.percentile(statistic_ipk, 50),
+            'q3': np.percentile(statistic_ipk, 75),
+            'max': max(statistic_ipk),
+        },
+        {
+            'attribute': 'Prestasi',
+            'count': len(prestasi),
+            'mean': 0 if not prestasi else round(statistics.mean(prestasi), 2),
+            'std': 0 if not prestasi else round(statistics.stdev(prestasi), 2),
+            'min': 0 if not prestasi else min(prestasi),
+            'q1': 0 if not prestasi else np.percentile(prestasi, 25),
+            'q2': 0 if not prestasi else np.percentile(prestasi, 50),
+            'q3': 0 if not prestasi else np.percentile(prestasi, 75),
+            'max': 0 if not prestasi else max(prestasi),
+        },
+        {
+            'attribute': 'Organisasi',
+            'count': len(organisasi),
+            'mean': 0 if not organisasi else round(statistics.mean(organisasi), 2),
+            'std': 0 if not organisasi else round(statistics.stdev(organisasi), 2),
+            'min': 0 if not organisasi else min(organisasi),
+            'q1': 0 if not organisasi else np.percentile(organisasi, 25),
+            'q2': 0 if not organisasi else np.percentile(organisasi, 50),
+            'q3': 0 if not organisasi else np.percentile(organisasi, 75),
+            'max': 0 if not organisasi else max(organisasi),
+        },
+        {
+            'attribute': 'Sertifikat',
+            'count': len(sertifikat),
+            'mean': 0 if not sertifikat else round(statistics.mean(sertifikat), 2),
+            'std': 0 if not sertifikat else round(statistics.stdev(sertifikat), 2),
+            'min': 0 if not sertifikat else min(sertifikat),
+            'q1': 0 if not sertifikat else np.percentile(sertifikat, 25),
+            'q3': 0 if not sertifikat else np.percentile(sertifikat, 75),
+            'q2': 0 if not sertifikat else np.percentile(sertifikat, 50),
+            'max': 0 if not sertifikat else max(sertifikat),
+        },
+        {
+            'attribute': 'Penghasilan Ortu',
+            'count': len(statistic_penghasilan_ortu),
+            'mean': statistics.mean(statistic_penghasilan_ortu),
+            'std': statistics.stdev(statistic_penghasilan_ortu),
+            'min': min(statistic_penghasilan_ortu),
+            'q1': np.percentile(statistic_penghasilan_ortu, 25),
+            'q2': np.percentile(statistic_penghasilan_ortu, 50),
+            'q3': np.percentile(statistic_penghasilan_ortu, 75),
+            'max': max(statistic_penghasilan_ortu),
+        },
+
+    ]
+
+
     return render_template(
         "report/analisis.jinja2",
         title="Analisis Data",
         template="dashboard-template",
+        data_boxplot=data_boxplot,
+        ammount_gender=ammount_gender,
+        pekerja_ortu=pekerja_ortu,
+        data_hasil_prediksi=data_hasil_prediksi,
+        penghasilan_ortu=penghasilan_ortu,
+        analisis_deskriptif=analisis_deskriptif,
+
+        scatter_prestasi_relevan=scatter_prestasi_relevan,
+        scatter_prestasi_tidak_relevan=scatter_prestasi_tidak_relevan,
+        scatter_organisasi_relevan=scatter_organisasi_relevan,
+        scatter_organisasi_tidak_relevan=scatter_organisasi_tidak_relevan,
+        scatter_sertifikat_relevan=scatter_sertifikat_relevan,
+        scatter_sertifikat_tidak_relevan=scatter_sertifikat_tidak_relevan,
+        
     )
 
 

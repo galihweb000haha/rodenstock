@@ -12,11 +12,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Hasil Prediksi Relevansi &#9432;</h5>
-                                <div class="chart_hasil_prediksi_relevansi"></div>
+                                <div class="chart_hasil_prediksi_relevansi" data-data_hasil_prediksi="{{data_hasil_prediksi}}"></div>
                             </div>
                             <div class="col-md-6">
+                                <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Sertifikat Terhadap Prediksi &#9432;</h5>
+                                <div class="chart_sactter_sertifikat"  data-scatter_sertifikat_relevan="{{scatter_sertifikat_relevan}}" data-scatter_sertifikat_tidak_relevan="{{scatter_sertifikat_tidak_relevan}}"></div>
+                            </div>
+                            <div class="col-md-6 d-none">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Prestasi Terhadap Prediksi &#9432;</h5>
-                                <div class="chart_korelasi_prestasi_terhadap_prediksi"></div>
+                                <div class="chart_korelasi_prestasi_terhadap_prediksi" data-prestasi_relevan="{{data_boxplot.prestasi_relevan}}" data-prestasi_tidak_relevan="{{data_boxplot.prestasi_tidak_relevan}}"></div>
                             </div>
                         </div>
                     </div>
@@ -29,12 +33,30 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">
-                                <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Organisasi Terhadap Prediksi &#9432;</h5>
-                                <div class="chart_korelasi_organisasi_terhadap_prediksi"></div>
+                                <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Prestasi Terhadap Prediksi &#9432;</h5>
+                                <div class="chart_sactter_prestasi" data-scatter_prestasi_relevan="{{scatter_prestasi_relevan}}" data-scatter_prestasi_tidak_relevan="{{scatter_prestasi_tidak_relevan}}"></div>
                             </div>
                             <div class="col-md-6">
+                                <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Organisasi Terhadap Prediksi &#9432;</h5>
+                                <div class="chart_sactter_organisasi" data-scatter_organisasi_relevan="{{scatter_organisasi_relevan}}" data-scatter_organisasi_tidak_relevan="{{scatter_organisasi_tidak_relevan}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="row row-bordered g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 d-none">
+                                <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Organisasi Terhadap Prediksi &#9432;</h5>
+                                <div class="chart_korelasi_organisasi_terhadap_prediksi" data-organisasi_relevan="{{data_boxplot.organisasi_relevan}}" data-organisasi_tidak_relevan="{{data_boxplot.organisasi_tidak_relevan}}"></div>
+                            </div>
+                            <div class="col-md-6 d-none">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Korelasi Sertifikat Terhadap Prediksi &#9432;</h5>
-                                <div class="chart_korelasi_sertifikat_terhadap_prediksi"></div>
+                                <div class="chart_korelasi_sertifikat_terhadap_prediksi" data-sertifikat_relevan="{{data_boxplot.sertifikat_relevan}}" data-sertifikat_tidak_relevan="{{data_boxplot.sertifikat_tidak_relevan}}"></div>
                             </div>
                         </div>
                     </div>
@@ -66,11 +88,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Distribusi Jenis Kelamin &#9432;</h5>
-                                <div class="chart_distribusi_jenis_kelamin" ></div>
+                                <div class="chart_distribusi_jenis_kelamin" data-ammount_gender="{{ammount_gender}}"></div>
                             </div>
                             <div class="col-md-6">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Distribusi Pekerjaan Ortu &#9432;</h5>
-                                <div class="chart_distribusi_pekerjaan" ></div>
+                                <div class="chart_distribusi_pekerjaan" data-pekerjaan_ortu="{{pekerja_ortu}}"></div>
                             </div>
                         </div>
                     </div>
@@ -84,11 +106,43 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Distribusi Penghasilan Ortu &#9432;</h5>
-                                <div class="chart_distribusi_penghasilan_ortu" ></div>
+                                <div class="chart_distribusi_penghasilan_ortu" data-penghasilan_ortu="{{penghasilan_ortu}}"></div>
                             </div>
                             <div class="col-md-6">
                                 <h5 class="card-header m-0 me-2 pb-3" title="Analisis multivariat adalah metode statistik untuk memahami hubungan antara beberapa variabel sekaligus.">Analisis Deskriptif &#9432;</h5>
                                 <div class="analisis_deskripstif" ></div>
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Count</th>
+                                                <th>Mean</th>
+                                                <th>Std</th>
+                                                <th>Min</th>
+                                                <th>25%</th>
+                                                <th>50%</th>
+                                                <th>75%</th>
+                                                <th>Max</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for analisis in analisis_deskriptif %}
+                                            <tr>
+                                                <td>{{analisis.attribute}}</td>
+                                                <td>{{analisis.count}}</td>
+                                                <td>{{analisis.mean}}</td>
+                                                <td>{{analisis.std}}</td>
+                                                <td>{{analisis.min}}</td>
+                                                <td>{{analisis.q1}}</td>
+                                                <td>{{analisis.q2}}</td>
+                                                <td>{{analisis.q3}}</td>
+                                                <td>{{analisis.max}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -99,6 +153,7 @@
 </div>
 
 {% block additionalscripts %}
+    <script src="{{ url_for('static', filename='vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='vendor/libs/apex-charts/apexcharts.js') }}"></script>
     <script src="{{ url_for('static', filename='vendor/js/select2.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
